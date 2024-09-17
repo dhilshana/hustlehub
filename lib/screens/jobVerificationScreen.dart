@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hastlehub/screens/home.dart';
+import 'package:hastlehub/screens/rootScreen.dart';
 import 'package:hastlehub/utils/constants.dart';
 import 'package:hastlehub/widgets/jobVerificationWidget.dart';
 
@@ -11,8 +12,8 @@ class JobVerificationScreen extends StatefulWidget {
 }
 
 class _JobVerificationScreenState extends State<JobVerificationScreen> {
-  // Dummy data for selection
-  final List<bool> _selectedCategories = List.generate(6, (_) => false);
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +75,7 @@ class _JobVerificationScreenState extends State<JobVerificationScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Home()));
+                              builder: (context) => RootScreen()));
                     },
                     style: ButtonStyle(
                       padding: WidgetStatePropertyAll(
@@ -97,44 +98,5 @@ class _JobVerificationScreenState extends State<JobVerificationScreen> {
         ),
       ),
     );
-  }
-
-  // Helper methods to get titles and icons
-  String _getTitle(int index) {
-    switch (index) {
-      case 0:
-        return "Programming";
-      case 1:
-        return "Marketing";
-      case 2:
-        return "Healthcare";
-      case 3:
-        return "Design";
-      case 4:
-        return "Aviation";
-      case 5:
-        return "Construction";
-      default:
-        return "";
-    }
-  }
-
-  Icon _getIcon(int index) {
-    switch (index) {
-      case 0:
-        return Icon(Icons.code, size: 40, color: Colors.black);
-      case 1:
-        return Icon(Icons.campaign, size: 40, color: Colors.black);
-      case 2:
-        return Icon(Icons.health_and_safety, size: 40, color: Colors.black);
-      case 3:
-        return Icon(Icons.design_services, size: 40, color: Colors.black);
-      case 4:
-        return Icon(Icons.flight_takeoff, size: 40, color: Colors.black);
-      case 5:
-        return Icon(Icons.construction, size: 40, color: Colors.black);
-      default:
-        return Icon(Icons.question_mark);
-    }
   }
 }

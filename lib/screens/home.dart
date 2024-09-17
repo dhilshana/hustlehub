@@ -125,27 +125,7 @@ class _HomeState extends State<Home> {
               ],
             ),
           ),
-          bottomNavigationBar: Stack(
-            clipBehavior: Clip
-                .none, // Ensures the CircleAvatar can overflow outside the Stack
-            children: [
-              CustomBottomNavWidget(),
-              Positioned(
-                left: (MediaQuery.of(context).size.width / 2) -
-                    30, // Center horizontally,
-                bottom: 30,
-                child: CircleAvatar(
-                  backgroundColor: Colors.greenAccent[700],
-                  foregroundColor: const Color.fromARGB(255, 32, 30, 30),
-                  radius: 30,
-                  child: const Icon(
-                    Icons.location_on,
-                    size: 35,
-                  ),
-                ),
-              )
-            ],
-          )),
+          ),
     );
   }
 }

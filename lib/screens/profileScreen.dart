@@ -50,27 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Icon(Icons.more_vert)
           ],
         ),
-        bottomNavigationBar: Stack(
-            clipBehavior: Clip
-                .none, // Ensures the CircleAvatar can overflow outside the Stack
-            children: [
-              CustomBottomNavWidget(),
-              Positioned(
-                left: (MediaQuery.of(context).size.width / 2) -
-                    30, // Center horizontally,
-                bottom: 30,
-                child: CircleAvatar(
-                  child: Icon(
-                    Icons.location_on,
-                    size: 35,
-                  ),
-                  backgroundColor: Colors.greenAccent[700],
-                  foregroundColor: Color.fromARGB(255, 32, 30, 30),
-                  radius: 30,
-                ),
-              )
-            ],
-          ),
+        
         backgroundColor: kBgColor,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0),
