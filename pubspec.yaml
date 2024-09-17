@@ -1,0 +1,41 @@
+name: hastlehub
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.5.1
+
+dependencies:
+  country_picker: ^2.0.26
+  flutter:
+    sdk: flutter
+  image_picker: ^1.1.2
+  windows_taskbar: ^1.1.2
+  
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  fonts: 
+    - family: Quicksand
+      fonts:
+        - asset: assets/fonts/Quicksand-SemiBold.ttf
+    - family: SFproDisplay
+      fonts:
+        - asset: assets/fonts/SFPRODISPLAYBOLD.ttf
+        - asset: assets/fonts/SFPRODISPLAYREGULAR.ttf
+  assets:
+    - assets/images/splashImage.png
+    - assets/images/welcomeImage1.png
+    - assets/images/welcomeImage2.png
+    - assets/images/apple.png
+    - assets/images/facebook.png
+    - assets/images/google.png
+    
+        
