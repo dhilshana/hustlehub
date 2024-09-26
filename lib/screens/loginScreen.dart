@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_final_fields
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hastlehub/screens/rootScreen.dart';
 import 'package:hastlehub/screens/securityCheck.dart';
+import 'package:hastlehub/services/auth_services.dart';
 import 'package:hastlehub/utils/constants.dart';
 import 'package:hastlehub/widgets/loginTextFieldWidget.dart';
 import 'package:hastlehub/widgets/socialMediaWidget.dart';
@@ -24,12 +27,42 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool get _isButtonEnabled {
     if (login) {
-      return _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+      return _emailController.text.isNotEmpty &&
+          _passwordController.text.isNotEmpty;
     } else {
       return _emailController.text.isNotEmpty &&
-             _passwordController.text.isNotEmpty &&
-             _nameController.text.isNotEmpty &&
-             _value;
+          _passwordController.text.isNotEmpty &&
+          _nameController.text.isNotEmpty &&
+          _value;
+    }
+  }
+
+  AuthServices authServices = AuthServices();
+
+  void signupuiHandler(BuildContext context) async {
+    try {
+      await authServices.registration(
+          _emailController.text, _passwordController.text);
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const SecurityCheckScreen()));
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message!)));
+      }
+    } //catch (e) {}
+  }
+
+  void loginUiHandler(BuildContext context) async {
+    try {
+      await authServices.login(_emailController.text, _passwordController.text);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => RootScreen()));
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message!)));
+      }
     }
   }
 
@@ -183,7 +216,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         value: _value,
                         checkColor: Colors.white,
                         activeColor: kshowAllColor,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // Removes extra margin around the checkbox
+                        materialTapTargetSize: MaterialTapTargetSize
+                            .shrinkWrap, // Removes extra margin around the checkbox
                         onChanged: (bool? value) {
                           setState(() {
                             _value = value!;
@@ -207,11 +241,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: double.infinity,
                 child: TextButton(
                     onPressed: () {
-                      if(_isButtonEnabled){
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SecurityCheckScreen()));
-                      }
-                      else{
-                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('You should give the email and password')));
+                      if (_isButtonEnabled) {
+                        if (register) {
+                          signupuiHandler(context);
+                        } else if (login) {
+                          loginUiHandler(context);
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'You should give the email and password')));
                       }
                     },
                     style: ButtonStyle(

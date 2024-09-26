@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "244170931963",
+    "project_id": "hustlehub-efee2",
+    "storage_bucket": "hustlehub-efee2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244170931963:android:4b48e7b12fe9f96f693a5e",
+        "android_client_info": {
+          "package_name": "com.example.hastlehub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJIvRMD1Zyq48yeTlLChbW8NVA-sHej9U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

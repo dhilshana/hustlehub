@@ -57,7 +57,7 @@ List<Widget> pages = [
                 bottom: 30,
                 child: CircleAvatar(
                   backgroundColor: Colors.greenAccent[700],
-                  foregroundColor: const Color.fromARGB(255, 32, 30, 30),
+                  foregroundColor: const Color.fromARGB(255, 32, 30, 30),  
                   radius: 30,
                   child: const Icon(
                     Icons.location_on,

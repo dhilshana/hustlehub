@@ -72,7 +72,7 @@ class _JobVerificationScreenState extends State<JobVerificationScreen> {
                 width: 200,
                 child: TextButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => RootScreen()));

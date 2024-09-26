@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hastlehub/utils/constants.dart';
 import 'package:hastlehub/utils/controller.dart';
-import 'package:hastlehub/widgets/customBotNavWidget.dart';
 import 'package:hastlehub/widgets/customProgressIdicator.dart';
 import 'package:hastlehub/widgets/profileDetailsWidget.dart';
 import 'package:image_picker/image_picker.dart';
@@ -47,7 +47,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
           centerTitle: true,
           backgroundColor: kBgColor,
           actions: [
-            Icon(Icons.more_vert)
+            IconButton(icon:Icon(Icons.more_vert),
+            onPressed: (){
+              showMenu(
+                context: context,
+                // constraints: BoxConstraints(maxHeight: 40,), 
+                position: RelativeRect.fromLTRB(100, 0, 30, 0),
+                
+                items: [
+                  PopupMenuItem(
+                    height: 40,
+                    child: Center(child: Text('Logout')),
+                    onTap: () {
+                      FirebaseAuth.instance.signOut();
+                    },
+                  )
+                ]
+                );
+            },
+            )
           ],
         ),
         

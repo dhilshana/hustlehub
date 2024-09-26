@@ -127,7 +127,7 @@ class _SecurityCheckScreenState extends State<SecurityCheckScreen> {
                 child: TextButton(
                     onPressed: () {
                       if(_isButtonEnabled){
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => VerificationScreen()));

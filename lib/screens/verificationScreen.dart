@@ -95,7 +95,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     child: TextButton(
                         onPressed: () {
                           if(_isButtonEnabled){
-                          Navigator.push(
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => JobVerificationScreen()));

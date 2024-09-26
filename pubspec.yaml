@@ -8,6 +8,8 @@ environment:
 
 dependencies:
   country_picker: ^2.0.26
+  firebase_auth: ^5.3.0
+  firebase_core: ^3.5.0
   flutter:
     sdk: flutter
   image_picker: ^1.1.2
