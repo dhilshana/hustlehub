@@ -10,7 +10,6 @@ class AuthServices {
     }
     catch (e){
       rethrow;
-
     }
   }
 
@@ -21,6 +20,11 @@ class AuthServices {
     catch(e){
       rethrow;
     }
+  }
+
+
+String? getUser(){
+  return   FirebaseAuth.instance.currentUser?.uid;
   }
 
   

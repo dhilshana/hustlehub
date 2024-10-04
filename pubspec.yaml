@@ -7,9 +7,11 @@ environment:
   sdk: ^3.5.1
 
 dependencies:
+  cloud_firestore: ^5.4.2
   country_picker: ^2.0.26
   firebase_auth: ^5.3.0
   firebase_core: ^3.5.0
+  firebase_storage: ^12.3.2
   flutter:
     sdk: flutter
   image_picker: ^1.1.2
@@ -33,11 +35,7 @@ flutter:
         - asset: assets/fonts/SFPRODISPLAYBOLD.ttf
         - asset: assets/fonts/SFPRODISPLAYREGULAR.ttf
   assets:
-    - assets/images/splashImage.png
-    - assets/images/welcomeImage1.png
-    - assets/images/welcomeImage2.png
-    - assets/images/apple.png
-    - assets/images/facebook.png
-    - assets/images/google.png
+    - assets/
+    - assets/images/
     
         
