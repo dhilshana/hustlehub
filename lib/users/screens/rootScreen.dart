@@ -19,7 +19,7 @@ class _RootScreenState extends State<RootScreen> {
 
   
 List<Widget> pages =const [
-    Home(),
+    UserHomeScreen(),
     AppliedJobScreen(),
     ExploreScreen(),
     ProfileScreen()

@@ -58,22 +58,23 @@ Future<void> updateData(String data,String key)async{
   }
 }
 
-Future<UserModel?> readData() async{
-  try{
-   String? id = AuthServices().getUser();
-   if(id!= null){
-     // Fetch the document from Firestore
-      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('Users').doc(id).get();
-       if (snapshot.exists) {
-        // Convert the document data into a UserModel
-        UserModel data = UserModel.fromMap(snapshot.data()!);
-        return data;
-      } else {
-        return null; // Handle the case where no data exists for the user
-      }
-   }
-  }catch(e){
-    rethrow;
-  }
-}
+// Future<UserModel?> readData() async{
+//   try{
+//    String? id = AuthServices().getUser();
+//    if(id!= null){
+//      // Fetch the document from Firestore
+//       DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('Users').doc(id).get();
+//        if (snapshot.exists) {
+//         // Convert the document data into a UserModel
+//         UserModel data = UserModel.fromMap(snapshot.data()!);
+//         return data;
+//       } else {
+//         return null; // Handle the case where no data exists for the user
+//       }
+//    }
+//   }catch(e){
+//     rethrow;
+//   }
+// }
+
 }

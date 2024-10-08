@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hastlehub/firebase_options.dart';
+import 'package:hastlehub/routes/routes.dart';
 import 'package:hastlehub/services/authCheck.dart';
 
 void main() async{
@@ -17,13 +19,24 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home:  AuthCheck(),
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
+    
+    return ScreenUtilInit(
+      designSize: const Size( 393,852 ),
 
-        fontFamily: 'SFProDisplay',
-       
+      //for font .sp
+      //container width and height  .w and .h
+       minTextAdapt: true,
+      splitScreenMode: true,
+      child: MaterialApp(
+        onGenerateRoute: (settings) => generateRoute(settings),
+        initialRoute: '/',
+        // home:  const AuthCheck(),
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+      
+          fontFamily: 'SFProDisplay',
+         
+        ),
       ),
     );
   }

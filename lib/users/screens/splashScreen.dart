@@ -16,9 +16,14 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(
-        const Duration(seconds: 3),
-        () => Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const WelcomeScreen())));
+        const Duration(seconds: 2),
+        (){
+        if (mounted) { // Check if the widget is still mounted
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+          );
+        }});
   }
 
   @override

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_final_fields, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/users/screens/jobVerificationScreen.dart';
 import 'package:hastlehub/utils/constants.dart';
 
@@ -101,10 +102,10 @@ class _VerificationScreenState extends State<VerificationScreen> {
                             // print('--------------------------');
                             // print(widget.user);
                             // print('-----------------------------');
-                          Navigator.pushReplacement(
+                          Navigator.pushReplacementNamed(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => JobVerificationScreen(user: widget.user,)));
+                              AppRoute.jobVerificaionScreen,arguments: widget.user
+                            );
                           }
                           else{
                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('You should fill the fields')));

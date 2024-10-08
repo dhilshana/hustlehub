@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/users/screens/securityCheck.dart';
 import 'package:hastlehub/utils/constants.dart';
 
@@ -124,10 +125,9 @@ String? selectedRole;
                         // print('---------------------------------');
                         // print(userData);
                         // print('-------------------------------------------');
-                      Navigator.pushReplacement(
+                      Navigator.pushReplacementNamed(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => SecurityCheckScreen(user: userData,)));
+                          AppRoute.securityCheckScreen,arguments: userData);
                       }
                       else{
                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('You should fill the fields')));

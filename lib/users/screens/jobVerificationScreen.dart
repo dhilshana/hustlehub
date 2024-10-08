@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/users/models/usermodel.dart';
 import 'package:hastlehub/users/screens/rootScreen.dart';
 import 'package:hastlehub/services/firestoreDataBase.dart';
@@ -101,11 +102,10 @@ class _JobVerificationScreenState extends State<JobVerificationScreen> {
                       await firestoreServices.storeData(UserModel(name: userData!['name'], email: userData!['email'], country: userData!['country'], jobs: userData!['jobs'], phone: userData!['phone'],role:userData!['role']));
                       // print(userData);
 
-                      Navigator.pushReplacement(
+                      Navigator.pushReplacementNamed(
                           // ignore: use_build_context_synchronously
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => RootScreen()));
+                          AppRoute.rootScreen);
                     },
                     style: ButtonStyle(
                       padding: const WidgetStatePropertyAll(

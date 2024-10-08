@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/users/screens/personalInfoScreen.dart';
 import 'package:hastlehub/utils/constants.dart';
 
@@ -27,7 +28,7 @@ class SettingScreen extends StatelessWidget {
                       ksizedBoxHeight,
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const PersonalInfoScreen()));
+                          Navigator.pushNamed(context, AppRoute.personalInfoScreen);
                         },
                         child: const Row(
                           children: [

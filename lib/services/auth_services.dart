@@ -1,7 +1,15 @@
 
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:hastlehub/company/screens/home.dart';
+import 'package:hastlehub/services/firestoreDataBase.dart';
+import 'package:hastlehub/users/screens/rootScreen.dart';
 
 class AuthServices {
+
+
   Future<void> registration(String email,String password) async{
     try{
 
@@ -13,9 +21,10 @@ class AuthServices {
     }
   }
 
-  Future<void> login(String email,String password) async{
+  Future<String> login(String email,String password) async{
     try{
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+       UserCredential user =   await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+       return user.user!.uid;
     }
     catch(e){
       rethrow;
@@ -26,6 +35,11 @@ class AuthServices {
 String? getUser(){
   return   FirebaseAuth.instance.currentUser?.uid;
   }
+
+
+
+
+  
 
   
 }

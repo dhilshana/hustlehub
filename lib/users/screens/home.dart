@@ -1,20 +1,23 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/users/screens/notificationScreen.dart';
+import 'package:hastlehub/users/screens/splashScreen.dart';
 import 'package:hastlehub/utils/constants.dart';
 import 'package:hastlehub/utils/controller.dart';
 import 'package:hastlehub/users/widgets/recommendationWidget.dart';
 
-class Home extends StatefulWidget {
+class UserHomeScreen extends StatefulWidget {
  
-const Home({super.key,});
+const UserHomeScreen({super.key,});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<UserHomeScreen> createState() => _UserHomeScreenState();
 }
 
-class _HomeState extends State<Home> {
+class _UserHomeScreenState extends State<UserHomeScreen> {
   
 
   @override
@@ -34,14 +37,21 @@ class _HomeState extends State<Home> {
                   fontSize: 30),
             ),
             centerTitle: true,
-            leading: const Icon(
-              Icons.list,
+            leading: IconButton(
+              onPressed: () async{
+              
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SplashScreen(),), (route) => false,);
+                
+              },
+              icon:Icon(Icons.list,
+              
               size: 30,
+              )
             ),
             actions: [
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationScreen()));
+                  Navigator.pushNamed(context, AppRoute.notificationScreen);
                 },
                 child: const Icon(
                   Icons.notifications_outlined,

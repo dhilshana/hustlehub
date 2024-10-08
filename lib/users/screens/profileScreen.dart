@@ -4,11 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/users/models/usermodel.dart';
 import 'package:hastlehub/users/screens/settingScreen.dart';
 import 'package:hastlehub/services/auth_services.dart';
 import 'package:hastlehub/services/firebaseStorage.dart';
 import 'package:hastlehub/services/firestoreDataBase.dart';
+import 'package:hastlehub/users/screens/splashScreen.dart';
 import 'package:hastlehub/utils/constants.dart';
 import 'package:hastlehub/utils/controller.dart';
 import 'package:hastlehub/users/widgets/customProgressIdicator.dart';
@@ -43,25 +45,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           centerTitle: true,
           backgroundColor: kBgColor,
-          actions: [
+          actions: [ 
             IconButton(
-              icon: const Icon(Icons.more_vert),
-              onPressed: () {
-                showMenu(
-                    context: context,
-                    // constraints: BoxConstraints(maxHeight: 40,),
-                    position: const RelativeRect.fromLTRB(100, 0, 30, 0),
-                    items: [
-                      PopupMenuItem(
-                        height: 40,
-                        child: const Center(child: Text('Logout')),
-                        onTap: () async {
-                          await FirebaseAuth.instance.signOut();
-
-                          // print(AuthServices().getUser());
-                        },
-                      )
-                    ]);
+              icon: const Icon(Icons.logout_outlined),
+              onPressed: ()async{
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SplashScreen(),), (route) => false,);
               },
             )
           ],
@@ -144,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ksizedBoxHeight,
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const SettingScreen()));
+                          Navigator.pushNamed(context, AppRoute.settingScreen);
                         },
                         child: Container(
                           padding: const EdgeInsets.all(10),

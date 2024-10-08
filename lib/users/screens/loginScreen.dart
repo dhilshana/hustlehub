@@ -1,10 +1,14 @@
-// ignore_for_file: prefer_final_fields
+// ignore_for_file: prefer_final_fields, use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hastlehub/company/models/companyModel.dart';
 import 'package:hastlehub/company/screens/home.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/users/screens/roleScreen.dart';
 import 'package:hastlehub/users/screens/rootScreen.dart';
 import 'package:hastlehub/services/auth_services.dart';
@@ -15,7 +19,7 @@ import 'package:hastlehub/users/widgets/socialMediaWidget.dart';
 
 class LoginScreen extends StatefulWidget {
   String? title;
-  LoginScreen({super.key,this.title});
+  LoginScreen({super.key, this.title});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -45,47 +49,42 @@ class _LoginScreenState extends State<LoginScreen> {
   AuthServices authServices = AuthServices();
   FirestoreServices firestoreServices = FirestoreServices();
 
- 
-  Map<String,dynamic>? userData;
+  Map<String, dynamic>? userData;
 
   void signupuiHandler(BuildContext context) async {
     setState(() {
       isLoading = true;
     });
     try {
-      
       await authServices.registration(
           _emailController.text, _passwordController.text);
-          userData ={
-            'name':_nameController.text,
-            'email':_emailController.text
-          };
-          // print(userData);
-        // await firestoreServices.storeData(_nameController.text, _emailController.text);
-        setState(() {
-          isLoading = false;
-        });
-      // ignore: use_build_context_synchronously
-      if(widget.title == 'jobseeker'){
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => RoleScreen(user: userData,)));
-      }
-      else if(widget.title == 'company'){
-        firestoreServices.storeCompanyData(CompanyModel(company: _nameController.text,email: _emailController.text));
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
+      userData = {'name': _nameController.text, 'email': _emailController.text};
+      // print(userData);
+      // await firestoreServices.storeData(_nameController.text, _emailController.text);
+      setState(() {
+        isLoading = false;
+      });
+      if (widget.title == 'jobseeker') {
+        Navigator.pushReplacementNamed(
+            context,
+            AppRoute.roleScreen,arguments: userData);
+      } else if (widget.title == 'company') {
+        firestoreServices.storeCompanyData(CompanyModel(
+            company: _nameController.text, email: _emailController.text));
+        Navigator.pushReplacementNamed(context,
+           AppRoute.companyHomeScreen);
       }
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.message!)));
       }
-    
-    }catch (e) {
-      if(context.mounted){
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
       }
-    }
-    finally{
+    } finally {
       setState(() {
         isLoading = false;
       });
@@ -93,21 +92,37 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loginUiHandler(BuildContext context) async {
-     setState(() {
+    setState(() {
       isLoading = true;
     });
     try {
-      await authServices.login(_emailController.text, _passwordController.text);
-      Navigator.pushReplacement(
-          // ignore: use_build_context_synchronously
-          context, MaterialPageRoute(builder: (context) => RootScreen()));
+      final uid = await authServices.login(
+          _emailController.text, _passwordController.text);
+
+      final userSnapshot = await FirebaseFirestore.instance.collection('Users').doc(uid).get();
+      if (userSnapshot.exists) {
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoute.rootScreen, // Navigate to RootScreen for users
+        );
+      } else {
+         final companySnapshot =
+          await FirebaseFirestore.instance.collection('Companies').doc(uid).get();
+
+      if (companySnapshot.exists){
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoute.companyHomeScreen
+         // Navigate to HomeScreen for companies
+        );
+      }
+      }
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.message!)));
       }
-    }
-    finally{
+    } finally {
       setState(() {
         isLoading = false;
       });
@@ -137,11 +152,11 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ksizedBoxHeight,
-              const Text(
+               Text(
                 "Welcome",
                 style: TextStyle(
                     color: kfontColor,
-                    fontSize: 25,
+                    fontSize: 25.sp,
                     fontWeight: FontWeight.bold),
               ),
               kheightinRec,
@@ -288,38 +303,41 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
-                    onPressed: () {
-                      if (_isButtonEnabled) {
-                        if (register) {
-                          signupuiHandler(context);
-                        } else if (login) {
-                          loginUiHandler(context);
-                        }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text(
-                                    'You should give the email and password')));
+                  onPressed: () {
+                    if (_isButtonEnabled) {
+                      if (register) {
+                        signupuiHandler(context);
+                      } else if (login) {
+                        loginUiHandler(context);
                       }
-                    },
-                    style: ButtonStyle(
-                      padding: const WidgetStatePropertyAll(
-                          EdgeInsets.symmetric(vertical: 13)),
-                      backgroundColor: WidgetStatePropertyAll(
-                          _isButtonEnabled ? Colors.black : ktextColor),
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(8.0), // Set border radius
-                        ),
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content:
+                              Text('You should give the email and password')));
+                    }
+                  },
+                  style: ButtonStyle(
+                    padding: const WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(vertical: 13)),
+                    backgroundColor: WidgetStatePropertyAll(
+                        _isButtonEnabled ? Colors.black : ktextColor),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(8.0), // Set border radius
                       ),
                     ),
-                    child: isLoading
-        ? const CupertinoActivityIndicator(color: Colors.white,) // Loading indicator when isLoading is true
-        : Text(
-            login ? "Login" : "Register",
-            style: const TextStyle(color: Colors.white, fontSize: 16),
-          ),),
+                  ),
+                  child: isLoading
+                      ? const CupertinoActivityIndicator(
+                          color: Colors.white,
+                        ) // Loading indicator when isLoading is true
+                      : Text(
+                          login ? "Login" : "Register",
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 16),
+                        ),
+                ),
               ),
               kheightinRec,
               kheightinRec,

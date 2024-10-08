@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
+import 'package:hastlehub/services/firestoreDataBase.dart';
 import 'package:hastlehub/users/screens/loginScreen.dart';
 import 'package:hastlehub/utils/constants.dart';
 
@@ -10,7 +12,8 @@ class WelcomeScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: kBgColor,          surfaceTintColor: Colors.transparent,
+          backgroundColor: kBgColor,          
+          surfaceTintColor: Colors.transparent,
           title: const Text(
             "Hustlehub",
             style: TextStyle(
@@ -39,12 +42,9 @@ class WelcomeScreen extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushNamed(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen(
-                                      title: 'company',
-                                    )));
+                          AppRoute.loginScreen,arguments: 'company');
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -77,12 +77,9 @@ class WelcomeScreen extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushNamed(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen(
-                                      title: 'jobseeker',
-                                    )));
+                            AppRoute.loginScreen,arguments: 'jobseeker');
                       },
                       child: Container(
                         decoration: BoxDecoration(

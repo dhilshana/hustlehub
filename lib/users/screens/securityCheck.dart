@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_final_fields, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/users/screens/verificationScreen.dart';
 import 'package:hastlehub/utils/constants.dart';
 import 'package:country_picker/country_picker.dart';
@@ -143,10 +144,10 @@ class _SecurityCheckScreenState extends State<SecurityCheckScreen> {
                         // print('---------------------------------');
                         // print(userData);
                         // print('-------------------------------------------');
-                      Navigator.pushReplacement(
+                      Navigator.pushReplacementNamed(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => VerificationScreen(user: userData,)));
+                          AppRoute.verificationScreen,arguments: userData
+                          );
                       }
                       else{
                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('You should fill the fields')));
