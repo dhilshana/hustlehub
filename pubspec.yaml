@@ -17,6 +17,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   image_picker: ^1.1.2
   windows_taskbar: ^1.1.2
+  intl:
   
 
 

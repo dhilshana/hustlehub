@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hastlehub/utils/constants.dart';
 
 class OppurtunityTypeWidget extends StatefulWidget {
-  const OppurtunityTypeWidget({super.key});
+   ValueChanged<String?> opportunityType; // Callback function
+
+  OppurtunityTypeWidget({super.key,required this.opportunityType});
 
   @override
   State<OppurtunityTypeWidget> createState() => _OppurtunityTypeWidgetState();
@@ -10,7 +12,7 @@ class OppurtunityTypeWidget extends StatefulWidget {
 
 class _OppurtunityTypeWidgetState extends State<OppurtunityTypeWidget> {
 
-    var _selectedValue;
+     String?_selectedValue;
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +37,13 @@ class _OppurtunityTypeWidgetState extends State<OppurtunityTypeWidget> {
                         children: [
                           Radio<String>(
                             activeColor: kfontColor,
-                            value: 'internship',
+                            value: 'Internship',
                             groupValue: _selectedValue,
                             onChanged: (String? value) {
                               setState(() {
                                 _selectedValue = value;
                               });
+                              widget.opportunityType(value);
                             },
                           ),
 
@@ -54,12 +57,13 @@ class _OppurtunityTypeWidgetState extends State<OppurtunityTypeWidget> {
                         children: [
                           Radio<String>(
                             activeColor: kfontColor,
-                            value: 'job',
+                            value: 'Job',
                             groupValue: _selectedValue,
                             onChanged: (String? value) {
                               setState(() {
                                 _selectedValue = value;
                               });
+                              widget.opportunityType(value); // Notify parent
                             },
                           ),
                          const Text('Job'),

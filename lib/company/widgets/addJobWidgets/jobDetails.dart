@@ -2,7 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:hastlehub/utils/constants.dart';
 
 class JobDetailsWidget extends StatefulWidget {
-  const JobDetailsWidget({super.key});
+  ValueChanged<String?> jobTitle;
+  ValueChanged<int?> yearsOfExp;
+  ValueChanged<String?> skillsRequired;
+  ValueChanged<String?> jobType;
+  ValueChanged<String?> location;
+  ValueChanged<String?> jobTime;
+  ValueChanged<int?> openingsCount;
+  ValueChanged<List<String>> jobDesc;
+  ValueChanged<List<String>> preferences;
+  JobDetailsWidget({super.key,
+  required this.jobTitle,
+  required this.yearsOfExp,
+  required this.skillsRequired,
+  required this.jobType,
+  required this.jobTime,
+  required this.openingsCount,
+required this.jobDesc,
+required this.preferences,
+required this.location
+
+  });
 
   @override
   State<JobDetailsWidget> createState() => _JobDetailsWidgetState();
@@ -17,26 +37,29 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
   TextEditingController openingsCountController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController preferenceController = TextEditingController();
-  var _selectedValue;
+  TextEditingController locationController = TextEditingController();
+  var _selectedTime,_selectedType;
+  List<String> preferences =[];
+  List<String> jobDesc =[];
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Job details',
           style: TextStyle(
               color: kfontColor, fontSize: 13, fontWeight: FontWeight.w600),
         ),
         kheightinRec,
         Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(border: Border.all(width: 0)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Job title',
                 style: TextStyle(
                   color: kfontColor,
@@ -46,7 +69,10 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
               kheightinRec,
               TextField(
                 controller: jobTitleController,
-                decoration: InputDecoration(
+                onChanged: (value) {
+                  widget.jobTitle(value);
+                },
+                decoration: const InputDecoration(
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                     hintText: 'eg.Software Engineer Trainee',
@@ -61,7 +87,7 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
                     border: OutlineInputBorder()),
               ),
               ksizedBoxHeight,
-              Text(
+              const Text(
                 'Required years of experience',
                 style: TextStyle(
                   color: kfontColor,
@@ -70,12 +96,15 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
               ),
               kheightinRec,
               TextField(
+                readOnly: true,
                 controller: yearsController,
+              
                 decoration: InputDecoration(
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                     suffixIcon: PopupMenuButton(
-                      icon: Icon(Icons.arrow_drop_down),
+                      
+                      icon: const Icon(Icons.arrow_drop_down),
                       itemBuilder: (context) => List.generate(10, (index) {
                         return PopupMenuItem(
                           value: index + 1,
@@ -86,17 +115,18 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
                         setState(() {
                           _selectedYear = value;
                           yearsController.text = _selectedYear.toString();
+                           widget.yearsOfExp(_selectedYear);
                         });
                       },
                     ),
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(
                       color: kfontColor,
                     )),
-                    border: OutlineInputBorder()),
+                    border: const OutlineInputBorder()),
               ),
               ksizedBoxHeight,
-              Text(
+              const Text(
                 'Skills Required',
                 style: TextStyle(
                   color: kfontColor,
@@ -106,7 +136,10 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
               kheightinRec,
               TextField(
                 controller: skillController,
-                decoration: InputDecoration(
+                onChanged: (value) {
+                  widget.skillsRequired(value);
+                },
+                decoration: const InputDecoration(
                     hintText: 'e.g. Java',
                     hintStyle: TextStyle(
                       fontSize: 15,
@@ -121,7 +154,7 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
                     border: OutlineInputBorder()),
               ),
               ksizedBoxHeight,
-              Text(
+              const Text(
                 'Job type',
                 style: TextStyle(
                   color: kfontColor,
@@ -134,12 +167,13 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
                   Radio<String>(
                   
                     activeColor: kfontColor,
-                    value: 'inoffice',
-                    groupValue: _selectedValue,
+                    value: 'In Office',
+                    groupValue: _selectedType,
                     onChanged: (String? value) {
                       setState(() {
-                        _selectedValue = value;
+                        _selectedType = value;
                       });
+                       widget.jobType(value);
                     },
                   ),
 
@@ -147,30 +181,68 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
                   // Job Radio Button
                   Radio<String>(
                     activeColor: kfontColor,
-                    value: 'hybrid',
-                    groupValue: _selectedValue,
+                    value: 'Hybrid',
+                    groupValue: _selectedType,
                     onChanged: (String? value) {
                       setState(() {
-                        _selectedValue = value;
+                        _selectedType = value;
                       });
+                      widget.jobType(value);
                     },
                   ),
                   const Text('Hybrid'),
                   Radio<String>(
                     activeColor: kfontColor,
-                    value: 'remote',
-                    groupValue: _selectedValue,
+                    value: 'Remote',
+                    groupValue: _selectedType,
                     onChanged: (String? value) {
                       setState(() {
-                        _selectedValue = value;
+                        _selectedType = value;
                       });
+                       widget.jobType(value);
                     },
                   ),
                   const Text('Remote'),
                 ],
               ),
               kheightinRec,
-              Text(
+              if(_selectedType == 'In Office')
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Job Location',
+                    style: TextStyle(
+                      color: kfontColor,
+                      fontSize: 13,
+                    ),
+                  ),
+                  kheightinRec,
+                  TextField(
+                controller: locationController,
+                onChanged: (value) {
+                  widget.location(value); 
+                },
+                decoration: const InputDecoration(
+                    hintText: 'e.g. Banglore',
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      color: ktextColor
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                      color: kfontColor,
+                    )),
+                    border: OutlineInputBorder()),
+              ),
+                ],
+              ),
+              
+
+            ksizedBoxHeight,
+              const Text(
                 'Part-time/Full-time',
                 style: TextStyle(
                   color: kfontColor,
@@ -184,12 +256,13 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
                   Radio<String>(
                   
                     activeColor: kfontColor,
-                    value: 'parttime',
-                    groupValue: _selectedValue,
+                    value: 'Part-Time',
+                    groupValue: _selectedTime,
                     onChanged: (String? value) {
                       setState(() {
-                        _selectedValue = value;
+                        _selectedTime = value;
                       });
+                      widget.jobTime(value);
                     },
                   ),
 
@@ -197,18 +270,19 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
                   // Job Radio Button
                   Radio<String>(
                     activeColor: kfontColor,
-                    value: 'fulltime',
-                    groupValue: _selectedValue,
+                    value: 'Full-Time',
+                    groupValue: _selectedTime,
                     onChanged: (String? value) {
                       setState(() {
-                        _selectedValue = value;
+                        _selectedTime = value;
                       });
+                      widget.jobTime(value);
                     },
                   ),
                   const Text('Full-Time'),
                 ]
               ),
-              Text(
+              const Text(
                 'Number of openings',
                 style: TextStyle(
                   color: kfontColor,
@@ -217,8 +291,12 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
               ),
               kheightinRec,
               TextField(
+                keyboardType: TextInputType.number,
                 controller: openingsCountController,
-                decoration: InputDecoration(
+                onChanged: (value) {
+                  widget.openingsCount(int.tryParse(value));
+                },
+                decoration: const InputDecoration(
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                     hintText: 'eg.4',
@@ -233,7 +311,7 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
                     border: OutlineInputBorder()),
               ),
               ksizedBoxHeight,
-              Text(
+              const Text(
                 'Job description',
                 style: TextStyle(
                   color: kfontColor,
@@ -242,26 +320,34 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
               ),
               kheightinRec,
               TextField(
-                keyboardType: TextInputType.multiline,
-                minLines: 3,
-                maxLines: 5,
+                
+
                 controller: descController,
+                
+               
                 decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: (){
+                      jobDesc.add(descController.text);
+                  widget.jobDesc(jobDesc);
+                  descController.clear();
+                    },
+                    icon: const Icon(Icons.add)),
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                     hintText: 'Key Responsibilities\n1.\n2.\n3.',
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                       fontSize: 15,
                       color: ktextColor
                     ),
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(
                       color: kfontColor,
                     )),
-                    border: OutlineInputBorder()),
+                    border: const OutlineInputBorder()),
               ),
               ksizedBoxHeight,
-              Text(
+              const Text(
                 'Additional candidate preference',
                 style: TextStyle(
                   color: kfontColor,
@@ -270,23 +356,29 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
               ),
               kheightinRec,
               TextField(
-                keyboardType: TextInputType.multiline,
-                minLines: 3,
-                maxLines: 5,
+               
                 controller: preferenceController,
-                decoration: InputDecoration(
+                
+                decoration:InputDecoration(
+                  
+                  suffixIcon:IconButton(onPressed: (){
+                    preferences.add(preferenceController.text);
+                    widget.preferences(preferences);
+                    preferenceController.clear();
+                  }, 
+                  icon: const Icon(Icons.add)) ,
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                     hintText: '1.eg.Computer Science Graduate preferred\n2.\n3.',
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                       fontSize: 15,
                       color: ktextColor
                     ),
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(
                       color: kfontColor,
                     )),
-                    border: OutlineInputBorder()),
+                    border: const OutlineInputBorder()),
               ),
             ],
           ),

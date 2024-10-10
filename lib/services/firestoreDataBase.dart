@@ -30,6 +30,19 @@ class FirestoreServices{
     }
   }
 
+  Future<void> updateCompanyData(CompanyModel company) async{
+    try{
+      String? id = AuthServices().getUser();
+      if(id!= null){
+        await FirebaseFirestore.instance.collection('Companies').doc(id).update(company.toMap());
+      }
+    }
+    catch(e){
+      rethrow;
+    }
+  }
+
+ 
   Future<void> saveImageUrlToFirestore(String imageUrl) async {
   try {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
