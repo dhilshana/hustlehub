@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hastlehub/company/models/companyModel.dart';
 import 'package:hastlehub/company/widgets/postedJobWidget.dart';
 import 'package:hastlehub/routes/routeConstants.dart';
+import 'package:hastlehub/services/firestoreDataBase.dart';
 import 'package:hastlehub/users/screens/splashScreen.dart';
 import 'package:hastlehub/utils/constants.dart';
 
@@ -13,6 +15,18 @@ class CompanyHomeScreen extends StatefulWidget {
 }
 
 class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
+
+FirestoreServices firestoreServices = FirestoreServices();
+ 
+
+  void refreshJobs() {
+     if (mounted) { // Check if mounted before calling setState
+      setState(() {}); // Trigger a rebuild
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -38,16 +52,42 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
         backgroundColor: kBgColor,
         body: Padding(
           padding: const EdgeInsets.fromLTRB(20.0, 15, 20, 15),
-          child: ListView.builder(
-            itemCount: 4,
-            itemBuilder: (context, index) {
-              return PostedJobWidget();
-            },),
+          child:FutureBuilder(
+            future: firestoreServices.getJobData(),
+             builder: (context, snapshot) {
+               if(snapshot.connectionState == ConnectionState.waiting){
+                return Center(child: CircularProgressIndicator(),);
+               }
+               else if(snapshot.hasError){
+                return Center(child: Text(snapshot.error.toString()),);
+               }
+               else if(!snapshot.hasData || snapshot.data?.jobs == null || snapshot.data!.jobs!.isEmpty){
+                return Center(child: Text('No data yet'),);
+               }
+               else{
+                final company = snapshot.data!;
+               return ListView.builder(
+                itemCount: company.jobs?.length ?? 0,
+                itemBuilder: (context, index) {
+                  final jobData = company.jobs![index];
+                  final companyData = company;
+                  //fecth company name and job title
+                  return PostedJobWidget(jobData: jobData,companyData: companyData,onJobDeleted: refreshJobs,); // Pass job data to your widget
+                },
+               );
+               }
+             },
+             )
+
         ),
 
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, AppRoute.addJobScreen);
+          onPressed: () async{
+           final result = await Navigator.pushNamed(context, AppRoute.addJobScreen);
+          if (result == true) {
+            refreshJobs();
+          }
+        
           },
           shape: CircleBorder(),
           backgroundColor: kfontColor,

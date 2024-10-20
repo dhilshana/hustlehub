@@ -1,25 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:hastlehub/services/firestoreDataBase.dart';
 import 'package:hastlehub/utils/constants.dart';
 
 class PostedJobWidget extends StatefulWidget {
-  const PostedJobWidget({super.key});
+  final Map<String, dynamic> jobData;
+  final  companyData; // Final variable to hold job data
+   final VoidCallback onJobDeleted;
+  PostedJobWidget({super.key, required this.jobData,required this.companyData, required this.onJobDeleted, });
 
   @override
   State<PostedJobWidget> createState() => _PostedJobWidgetState();
 }
 
 class _PostedJobWidgetState extends State<PostedJobWidget> {
+   String calculateTimeAgo(String? jobDate) {
+    if (jobDate == null) return "Date not available - ";
+
+    DateTime postedDate = DateTime.parse(jobDate); // Parse the job date
+    final now = DateTime.now();
+    final difference = now.difference(postedDate);
+
+    if (difference.inDays > 1) {
+      return '${difference.inDays} days ago - ';
+    } else if (difference.inDays == 1) {
+      return '1 day ago - ';
+    } else if (difference.inHours >= 1) {
+      return '${difference.inHours} hours ago - ';
+    } else if (difference.inMinutes >= 1) {
+      return '${difference.inMinutes} minutes ago - ';
+    } else {
+      return 'Just now - ';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    
+
+    // Extract job details from the jobData map
+    final String jobTitle = widget.jobData['jobTitle'] ?? 'Unknown Title';
+    final String initialSalary = widget.jobData['initialSalary'] ?? '400'; 
+    final String finalSalary = widget.jobData['finalSalary'] ?? '900'; 
+    final String currency = widget.jobData['currency']??'USD';
+    final String jobLocation = widget.jobData['jobLocation'] ?? 'Remote';
+    final int applicationCount = widget.jobData['applicationCount'] ?? 0;
+    final String companyName = widget.companyData.company ?? 'unknown';
+    final String date = calculateTimeAgo(widget.jobData['date']);
+
     return Container(
-      padding: const EdgeInsets.fromLTRB(10.0,10.0,10.0,15.0),
+      padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 15.0),
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         color: Colors.white,
-        border: Border.all(
-          color: kcontainerColor,
-        )
+        border: Border.all(color: kcontainerColor),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -27,80 +61,98 @@ class _PostedJobWidgetState extends State<PostedJobWidget> {
           Row(
             children: [
               IconButton(
-                onPressed: (){}, 
+                onPressed: () {}, 
                 icon: const Icon(Icons.radio_button_checked),
-                ),
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Data Analyst",style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: kfontColor
-              ),),
-                    Text("OVO",)
-                  ],
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: (){}, 
-                  icon: const Icon(Icons.bookmark_outline)
-                  )
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    jobTitle, // Dynamically display job title
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: kfontColor,
+                    ),
+                  ),
+                  Text(
+                    companyName, // Placeholder for company name if required
+                  ),
+                ],
+              ),
+              const Spacer(),
+              IconButton(
+                onPressed: () async{
+                  await FirestoreServices().deleteJobData(jobTitle, context);
+                   widget.onJobDeleted();
+                  
+                }, 
+                icon: const Icon(Icons.delete),
+              ),
             ],
           ),
           kheightinRec,
-          const Row(
+          Row(
             children: [
-              Icon(Icons.location_on,size: 20,),
+              const Icon(Icons.location_on, size: 20),
               widthInRow,
-              Text("Singapore",style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: kfontColor
-              ),)
+              Text(
+                jobLocation, // Dynamically display job location
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: kfontColor,
+                ),
+              ),
             ],
           ),
           kheightinRec,
-          const Row(
+          Row(
             children: [
-              Icon(Icons.paid,size: 20,),
-              SizedBox(width: 10,),
-              Text("\$400 - \$900",style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: kfontColor
-              ),)
+              const Icon(Icons.paid, size: 20),
+              const SizedBox(width: 10),
+              Text(
+                '$initialSalary $currency - $finalSalary $currency',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: kfontColor,
+                ),
+              ),
             ],
           ),
           kheightinRec,
           kheightinRec,
           Row(
-            children: [
-              // JobScreenWidget(icon: const Icon(Icons.video_camera_front,size: 18,),text: "Remote",),
-              // JobScreenWidget(icon: const Icon(Icons.access_time_filled,size: 18,),text: "Internship",),
-              // JobScreenWidget(icon: const Icon(Icons.business_center,size: 18,),text: "1 Year Exp",),
+            children: const [
+              // Add other job detail widgets (like remote or experience) here if needed
             ],
           ),
           kheightinRec,
           kheightinRec,
           Container(
             decoration: BoxDecoration(
-              border: Border.all(color: ktextColor,width: 0.5)
+              border: Border.all(color: ktextColor, width: 0.5),
             ),
           ),
           kheightinRec,
-      
-          const Row(
+          Row(
             children: [
-              Icon(Icons.history,size: 18,color: ktextColor,),
-              SizedBox(width: 10,),
-              Text("1 Day ago - ",style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-                color: ktextColor
-              ),),
-              Text("12 Applications",style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-                color: kshowAllColor,
-              ),)
+              const Icon(Icons.history, size: 18, color: ktextColor),
+              const SizedBox(width: 10),
+              Text(
+                date,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                  color: ktextColor,
+                ),
+              ),
+              Text(
+                "$applicationCount Applications", // Display application count
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                  color: kshowAllColor,
+                ),
+              ),
             ],
           ),
         ],

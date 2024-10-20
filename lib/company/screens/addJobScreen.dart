@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hastlehub/company/models/companyModel.dart';
 import 'package:hastlehub/company/widgets/addJobWidgets/jobDetails.dart';
@@ -31,36 +33,66 @@ class _AddJobScreenState extends State<AddJobScreen> {
   String? currency;
   String? initialSalary;
   String? finalSalary;
-  List<String> perks=[];
+  List<String> perks = [];
+
+  
 
   void updateData() async {
+    
     try {
-      await firestoreServices.updateCompanyData(CompanyModel(
-       oppurtunityType: selectedOpportunityType,
-                        role: jobTitle,
-                        experience: yearsOfExp, //...
-                        skills: skillsRequired,
-                        jobType: jobType,
-                        jobTime: jobTime,
-                        openingsCount:openingsCount,
-                        initialSalary: initialSalary, ///....
-                        finalSalary: finalSalary,  //...
-                        desc: jobDesc, 
-                        currency: currency, //...
-                        prefrence: preference,
-                        perks: perks,
-                        jobLocation: location,
-                        date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                        
+      // Job-specific data
+      Map<String, dynamic> jobData = {
+        'jobTitle':jobTitle ?? 'no title',
+        'finalSalary': finalSalary ?? '0',
+        'jobLocation': location ?? jobType,
+        'jobType': jobType ?? 'unknown',
+        'experience': yearsOfExp ?? '0',
+      
+        'date': DateTime.now().toString() ,
+        'desc': jobDesc,
+        'oppurtunityType': selectedOpportunityType ?? 'unknown',
+        'skills': skillsRequired ,
+        'jobTime':jobTime ?? 'unknown',
+        'openingsCount': openingsCount ?? 'unknown',
+        'currency': currency ?? 'unknown',
+        'initialSalary': initialSalary ?? 'unknown',
+        'preference': preference ,
+        'perks': perks ,
+      };
 
-      ));
-          ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Updteded Successfully')));
-      Navigator.pop(context);
+       User? user = FirebaseAuth.instance.currentUser;
+       String? userEmail = user?.email;
+       String? companyName;
+
+       if (user != null) {
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection('Companies')
+        .doc(user.uid)
+        .get();
+
+    if (doc.exists) {
+       companyName = doc['company'] as String?;// This will return the company name if it exists
+    }
+       }
+
+       
+       // Assuming you have the email and company name
+    CompanyModel company = CompanyModel(
+      email: userEmail, // Replace with actual email
+      company: companyName, // Replace with actual company name
+    );
+
+        // Update company data with job
+  await firestoreServices.updateCompanyData(company, jobTitle.toString(), jobData);
+
+  
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Updloaded Successfully')));
+      Navigator.pop(context,true);
     } catch (e) {
       ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(e.toString())));
-    
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+          print(e);
     }
   }
 
@@ -87,77 +119,70 @@ class _AddJobScreenState extends State<AddJobScreen> {
                   },
                 ),
                 ksizedBoxHeight,
-                JobDetailsWidget(jobTitle: (String? value) {
-                  setState(() {
-                    jobTitle = value;
-                  });
-                  
-                },
-                yearsOfExp: (int? value) {
-                
+                JobDetailsWidget(
+                  jobTitle: (String? value) {
+                    setState(() {
+                      jobTitle = value;
+                    });
+                  },
+                  yearsOfExp: (int? value) {
                     setState(() {
                       yearsOfExp = value;
                     });
-                  
-    
-                },
-                skillsRequired: (value) {
-                  setState(() {
-                    skillsRequired = value;
-                  });
-                },
-                jobType: (value) {
-                  setState(() {
-                    jobType = value;
-                  });
-                },
-                location: (value) {
-                  setState(() {
-                    location = value;
-                  });
-                },
-                jobTime: (value) {
-                  setState(() {
-                    jobTime = value;
-                  });
-                },
-                openingsCount: (value) {
-                  setState(() {
-                    openingsCount = value;
-                  });
-                },
-                jobDesc: (value) {
-                  setState(() {
-                    jobDesc = value;
-                  });
-                },
-                preferences: (value) {
-                  preference = value;
-                },
+                  },
+                  skillsRequired: (value) {
+                    setState(() {
+                      skillsRequired = value;
+                    });
+                  },
+                  jobType: (value) {
+                    setState(() {
+                      jobType = value;
+                    });
+                  },
+                  location: (value) {
+                    setState(() {
+                      location = value;
+                    });
+                  },
+                  jobTime: (value) {
+                    setState(() {
+                      jobTime = value;
+                    });
+                  },
+                  openingsCount: (value) {
+                    setState(() {
+                      openingsCount = value;
+                    });
+                  },
+                  jobDesc: (value) {
+                    setState(() {
+                      jobDesc = value;
+                    });
+                  },
+                  preferences: (value) {
+                    preference = value;
+                  },
                 ),
                 ksizedBoxHeight,
                 SalaryWidget(
                   currencyType: (value) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                    setState(() {
-                      currency = value;
-
+                      setState(() {
+                        currency = value;
+                      });
                     });
-                    });
-                     
                   },
                   initialSalary: (value) {
                     initialSalary = value;
                   },
-                  
                   finalSalary: (value) {
                     finalSalary = value;
                   },
                   perks: (value) {
-                    perks =value;
+                    perks = value;
                   },
                 ),
-               
                 ksizedBoxHeight,
                 SizedBox(
                   width: double.infinity,
@@ -174,7 +199,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
                         ),
                       ),
                       onPressed: () {
-                      updateData();
+                        updateData();
                       },
                       child: const Text(
                         'Submit',
