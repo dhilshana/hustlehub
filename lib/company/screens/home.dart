@@ -72,7 +72,11 @@ FirestoreServices firestoreServices = FirestoreServices();
                   final jobData = company.jobs![index];
                   final companyData = company;
                   //fecth company name and job title
-                  return PostedJobWidget(jobData: jobData,companyData: companyData,onJobDeleted: refreshJobs,); // Pass job data to your widget
+                  return GestureDetector(
+                    onTap: (){
+                      Navigator.pushNamed(context, AppRoute.postedJobDetailScreen,arguments: jobData);
+                    },
+                    child: PostedJobWidget(jobData: jobData,companyData: companyData,onJobDeleted: refreshJobs,)); // Pass job data to your widget
                 },
                );
                }

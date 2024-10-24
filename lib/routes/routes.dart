@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hastlehub/company/screens/addJobScreen.dart';
 import 'package:hastlehub/company/screens/home.dart';
+import 'package:hastlehub/company/screens/jobDetailsScreen.dart';
 import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/services/authCheck.dart';
 import 'package:hastlehub/users/screens/appliedJobScreen.dart';
@@ -42,12 +43,10 @@ Route<dynamic> generateRoute(RouteSettings routeSettings){
     }
     case AppRoute.verificationScreen:{
       Map<String,dynamic> userData = routeSettings.arguments as Map<String,dynamic>;
-      print(userData);
     return MaterialPageRoute(builder: (context) => VerificationScreen(user: userData),);
     }
     case AppRoute.jobVerificaionScreen:{
       Map<String,dynamic> userData = routeSettings.arguments as Map<String,dynamic>;
-      print(userData);
     return MaterialPageRoute(builder: (context) => JobVerificationScreen(user: userData,),);
     }
     case AppRoute.rootScreen:
@@ -70,6 +69,12 @@ Route<dynamic> generateRoute(RouteSettings routeSettings){
     return MaterialPageRoute(builder: (context) => CompanyHomeScreen(),);
     case AppRoute.addJobScreen:
     return MaterialPageRoute(builder: (context) => AddJobScreen());
+    case AppRoute.postedJobDetailScreen:
+    {
+      final jobData = routeSettings.arguments;
+      return MaterialPageRoute(builder: (context) => JobDetailScreen(jobDetails: jobData,));
+    }
+    
     default :
    return MaterialPageRoute(builder: (context)=> Scaffold());
   }

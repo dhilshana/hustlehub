@@ -137,6 +137,47 @@ Future<void> updateData(String data,String key)async{
   }
 }
 
+Future<List<Map<String, dynamic>>> fetchAllJobs() async {
+  List<Map<String, dynamic>> allJobs = [];
+
+  try {
+    // Fetch all company documents from Firestore
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+        .collection('Companies')
+        .get();
+
+    // Iterate through each company document
+    for (var doc in querySnapshot.docs) {
+      Map<String, dynamic> companyData = doc.data();
+       String companyName = companyData['company'];
+      String companyEmail = companyData['email'];
+
+      // Fetch the 'jobs' subcollection for the current company
+      CollectionReference jobsRef = doc.reference.collection('Jobs');
+      QuerySnapshot jobsSnapshot = await jobsRef.get(); 
+
+      // Iterate through each job document in the subcollection
+      for (var jobDoc in jobsSnapshot.docs) {
+        // Get the job details and job title (which is the document ID)
+        Map<String, dynamic> jobDetails = jobDoc.data() as Map<String,dynamic>;
+        String jobTitle = jobDoc.id; // The document ID is the job title
+      
+       // Create a map that includes company details, job title, and job details
+        allJobs.add({
+          'companyName': companyName,
+          'companyEmail': companyEmail,
+          'jobTitle': jobTitle,
+          'jobDetails': jobDetails,
+        });
+      }
+    }
+  } catch (e) {
+    rethrow;
+  }
+
+  return allJobs;
+}
+
 // Future<UserModel?> readData() async{
 //   try{
 //    String? id = AuthServices().getUser();

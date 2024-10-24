@@ -162,7 +162,7 @@ class _SalaryWidgetState extends State<SalaryWidget> {
                           onChanged: (bool? value) {
                             setState(() {
                               perk1Value = !perk1Value;
-                            });
+                            }); 
                             _updatePerks(perk1Value, '5 Days a Week');
                           },
                           activeColor: kfontColor),

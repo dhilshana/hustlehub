@@ -146,7 +146,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         physics: const NeverScrollableScrollPhysics(), // Prevents inner scrolling
                         itemCount: 4,
                         itemBuilder: (context, index) {
-                          return const RecommendationWidget();
+                          return Text('nothing');
+                          // RecommendationWidget();
                         },
                       ),
                     ],

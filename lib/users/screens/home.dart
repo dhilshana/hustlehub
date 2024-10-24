@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hastlehub/routes/routeConstants.dart';
+import 'package:hastlehub/services/firestoreDataBase.dart';
 import 'package:hastlehub/users/screens/notificationScreen.dart';
 import 'package:hastlehub/users/screens/splashScreen.dart';
 import 'package:hastlehub/utils/constants.dart';
 import 'package:hastlehub/utils/controller.dart';
 import 'package:hastlehub/users/widgets/recommendationWidget.dart';
+import 'package:intl/intl.dart';
 
 class UserHomeScreen extends StatefulWidget {
  
@@ -18,10 +20,22 @@ const UserHomeScreen({super.key,});
 }
 
 class _UserHomeScreenState extends State<UserHomeScreen> {
+
+  FirestoreServices firestoreServices = FirestoreServices();
+
+   Future<List<Map<String,dynamic>>> fetchAndDisplayAllJobs() async {
+    // Fetch jobs posted by all companies
+    List<Map<String, dynamic>> fetchedJobs = await firestoreServices.fetchAllJobs();
+    
+    // Update the state to display the jobs
+   
+    return fetchedJobs;
+  }
   
 
   @override
   Widget build(BuildContext context) {
+  
   
     return SafeArea(
       child: Scaffold(
@@ -37,17 +51,12 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   fontSize: 30),
             ),
             centerTitle: true,
-            leading: IconButton(
-              onPressed: () async{
-              
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SplashScreen(),), (route) => false,);
-                
-              },
-              icon:Icon(Icons.list,
+            leading: 
+              const Icon(Icons.list,
               
               size: 30,
-              )
-            ),
+              ),
+            
             actions: [
               GestureDetector(
                 onTap: () {
@@ -75,19 +84,19 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             padding: const EdgeInsets.fromLTRB(20.0, 15, 20, 15),
             child: Column(
               children: [
-                const Row(
+                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.calendar_month,
                       size: 18,
                       color: ktextColor,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Text(
-                      "Mon 30, Nov 25",
-                      style: TextStyle(
+                      DateFormat('yyyy-MM-dd').format(DateTime.parse(DateTime.now().toString())),
+                      style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                           color: ktextColor),
@@ -98,15 +107,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   "Find Your Perfect Job",
                   style: TextStyle(fontWeight: FontWeight.w700, fontSize: 40),
                 ),
-                ksizedBoxHeight,
-                Container(
-                  height: 200,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: kcontainerColor,
-                  ),
-                ),
+                
                 ksizedBoxHeight,
                 const Row(
                   children: [
@@ -123,13 +124,31 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   ],
                 ),
                 ksizedBoxHeight,
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      return const RecommendationWidget();
-                    },
-                  ),
+                FutureBuilder(
+                  future: fetchAndDisplayAllJobs(),
+                  builder: (context, snapshot) {
+                    if(snapshot.connectionState == ConnectionState.waiting){
+                      return const Center(child: CircularProgressIndicator(),);
+                    }
+                    else if(snapshot.hasError){
+                      return Center(child: Text(snapshot.error.toString()),);
+                    }
+                    else if(snapshot.data!.isEmpty){
+                       return const Center(child: Text('No data yet'),);
+                    }
+                    else{
+                      
+                    return Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return RecommendationWidget(jobDetails: snapshot.data![index],);
+                      },
+                    ),
+                  );
+                    }
+                  },
+                
                 )
               ],
             ),
