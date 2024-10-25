@@ -142,7 +142,11 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     child: ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        return RecommendationWidget(jobDetails: snapshot.data![index],);
+                        return GestureDetector(
+                          onTap: (){
+                            Navigator.pushNamed(context, AppRoute.jobDetailScreen,arguments:snapshot.data![index] );
+                          },
+                          child: RecommendationWidget(jobDetails: snapshot.data![index],));
                       },
                     ),
                   );

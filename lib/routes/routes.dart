@@ -7,6 +7,7 @@ import 'package:hastlehub/services/authCheck.dart';
 import 'package:hastlehub/users/screens/appliedJobScreen.dart';
 import 'package:hastlehub/users/screens/exploreScreen.dart';
 import 'package:hastlehub/users/screens/home.dart';
+import 'package:hastlehub/users/screens/jobDetailsScreen.dart';
 import 'package:hastlehub/users/screens/jobVerificationScreen.dart';
 import 'package:hastlehub/users/screens/loginScreen.dart';
 import 'package:hastlehub/users/screens/notificationScreen.dart';
@@ -73,6 +74,10 @@ Route<dynamic> generateRoute(RouteSettings routeSettings){
     {
       final jobData = routeSettings.arguments;
       return MaterialPageRoute(builder: (context) => JobDetailScreen(jobDetails: jobData,));
+    }
+    case AppRoute.jobDetailScreen:{
+      final jobData = routeSettings.arguments;
+      return MaterialPageRoute(builder: (context) => UserJobDetailScreen(jobDetails: jobData));
     }
     
     default :

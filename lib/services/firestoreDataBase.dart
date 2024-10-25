@@ -149,6 +149,7 @@ Future<List<Map<String, dynamic>>> fetchAllJobs() async {
     // Iterate through each company document
     for (var doc in querySnapshot.docs) {
       Map<String, dynamic> companyData = doc.data();
+      String docId = doc.id;
        String companyName = companyData['company'];
       String companyEmail = companyData['email'];
 
@@ -164,6 +165,7 @@ Future<List<Map<String, dynamic>>> fetchAllJobs() async {
       
        // Create a map that includes company details, job title, and job details
         allJobs.add({
+          'docId':docId,
           'companyName': companyName,
           'companyEmail': companyEmail,
           'jobTitle': jobTitle,
@@ -176,6 +178,30 @@ Future<List<Map<String, dynamic>>> fetchAllJobs() async {
   }
 
   return allJobs;
+}
+
+Future<void> applyJob({
+  required String companyId,
+  required String jobId,
+  required Map<String, dynamic> applicantDetails,
+}) async {
+  // Reference to the specific job document in the company's Jobs subcollection
+  DocumentReference jobRef = FirebaseFirestore.instance
+      .collection('Companies')
+      .doc(companyId)
+      .collection('Jobs')
+      .doc(jobId);
+
+  try {
+    // Perform the update operation directly
+    await jobRef.update({
+      'applicationCount': FieldValue.increment(1), // Increment application count
+      'applications': FieldValue.arrayUnion([applicantDetails]), // Add applicant details
+    });
+    print('Application submitted successfully');
+  } catch (e) {
+    print('Error applying for job: $e');
+  }
 }
 
 // Future<UserModel?> readData() async{

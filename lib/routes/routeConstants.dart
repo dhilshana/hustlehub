@@ -17,5 +17,6 @@ class AppRoute{
   static const companyHomeScreen = '/companyHomeScreen';
   static const addJobScreen ='/addJobScreen';
   static const postedJobDetailScreen = '/jobDetailScreen';
+  static const jobDetailScreen = '/userJobDetailScreen';
 
 }

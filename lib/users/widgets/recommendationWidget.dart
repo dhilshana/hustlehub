@@ -35,7 +35,6 @@ class _RecommendationWidgetState extends State<RecommendationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.jobDetails);
     return Container(
       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 15.0),
       margin: const EdgeInsets.only(bottom: 10),

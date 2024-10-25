@@ -37,6 +37,7 @@ class CompanyModel {
       'initialSalary': job['initialSalary'],
       'preference': job['preference'],
       'perks': job['perks'],
+      'applications':[],
     };
   }
 
