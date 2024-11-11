@@ -125,6 +125,8 @@ Future<void> deleteJobData(String title,BuildContext context) async{
   }
 }
 
+
+
 Future<void> updateData(String data,String key)async{
   try{
      String? id = AuthServices().getUser();
@@ -185,6 +187,8 @@ Future<void> applyJob({
   required String jobId,
   required Map<String, dynamic> applicantDetails,
 }) async {
+
+  print('ffffffff');
   // Reference to the specific job document in the company's Jobs subcollection
   DocumentReference jobRef = FirebaseFirestore.instance
       .collection('Companies')
@@ -204,23 +208,5 @@ Future<void> applyJob({
   }
 }
 
-// Future<UserModel?> readData() async{
-//   try{
-//    String? id = AuthServices().getUser();
-//    if(id!= null){
-//      // Fetch the document from Firestore
-//       DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('Users').doc(id).get();
-//        if (snapshot.exists) {
-//         // Convert the document data into a UserModel
-//         UserModel data = UserModel.fromMap(snapshot.data()!);
-//         return data;
-//       } else {
-//         return null; // Handle the case where no data exists for the user
-//       }
-//    }
-//   }catch(e){
-//     rethrow;
-//   }
-// }
 
 }

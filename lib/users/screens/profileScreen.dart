@@ -34,7 +34,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
    
-    // print(imageFile);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(

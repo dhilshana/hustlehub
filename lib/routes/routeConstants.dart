@@ -18,5 +18,7 @@ class AppRoute{
   static const addJobScreen ='/addJobScreen';
   static const postedJobDetailScreen = '/jobDetailScreen';
   static const jobDetailScreen = '/userJobDetailScreen';
+  static const applyScreen = '/applyScreen';
+  static const googleMapScreen = '/googleMapScreen';
 
 }

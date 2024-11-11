@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/utils/constants.dart';
 import 'package:hastlehub/users/widgets/filterModalSheetWidget.dart';
 import 'package:hastlehub/users/widgets/recommendationWidget.dart';
 import 'package:hastlehub/users/widgets/searchWidget.dart';
 import 'package:hastlehub/users/widgets/sortOptionWidgets.dart';
 import 'package:hastlehub/users/widgets/topCompaniesWidget.dart';
+import 'package:hastlehub/utils/controller.dart';
 
 
 class ExploreScreen extends StatefulWidget {
@@ -16,12 +18,15 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   bool isSearching = false;
+  String _searchQuery = "";
 
   // Method to update the search state
   void _onSearchChanged(String query) {
     setState(() {
       isSearching =
           query.isNotEmpty; // Set true if there's input, false otherwise
+ _searchQuery = query; 
+      
     });
   }
 
@@ -141,15 +146,41 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         const SortOptionWidget(),
                       ],
                       ksizedBoxHeight,
-                      ListView.builder(
-                        shrinkWrap: true, // Makes the ListView take only as much height as needed
-                        physics: const NeverScrollableScrollPhysics(), // Prevents inner scrolling
-                        itemCount: 4,
-                        itemBuilder: (context, index) {
-                          return Text('nothing');
-                          // RecommendationWidget();
-                        },
-                      ),
+                      FutureBuilder(
+                  future: fetchAndDisplayAllJobs(query: isSearching ? _searchQuery : null),
+                  builder: (context, snapshot) {
+                    if(snapshot.connectionState == ConnectionState.waiting){
+                      return const Center(child: CircularProgressIndicator(),);
+                    }
+                    else if(snapshot.hasError){
+                      return Center(child: Text(snapshot.error.toString()),);
+                    }
+                    else if(snapshot.data!.isEmpty){
+                       return const Center(child: Text('No data yet'),);
+                    }
+                    else{
+                      
+                    return ListView.builder(
+                      shrinkWrap: true, // Makes the ListView take only as much height as needed
+                      physics: const NeverScrollableScrollPhysics(), // Prevents inner scrolling
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: (){
+                            Navigator.pushNamed(context, AppRoute.jobDetailScreen,arguments:snapshot.data![index] ).then((value){
+                              setState(() {
+                                
+                              });
+                            });
+                          },
+                          child: RecommendationWidget(jobDetails: snapshot.data![index],));
+                      },
+                    );
+                    }
+                  },
+                
+                )
+                     
                     ],
                   ),
                 ),

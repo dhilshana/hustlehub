@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/services/firestoreDataBase.dart';
 import 'package:hastlehub/users/widgets/recommandationJobsWidget.dart';
 import 'package:hastlehub/utils/constants.dart';
@@ -9,15 +10,15 @@ class UserJobDetailScreen extends StatelessWidget {
   UserJobDetailScreen({super.key,required this.jobDetails});
   FirestoreServices firestoreServices = FirestoreServices();
 
-  Future<void> applyjob(String companyId,String jobId,Map<String,dynamic> applicantDetails,BuildContext context)async{
-    try{
-      firestoreServices.applyJob(companyId: companyId, jobId: jobId, applicantDetails: applicantDetails);
-    }
-    catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
-      print(e.toString());
-    }
-  }
+  // Future<void> applyjob(String companyId,String jobId,Map<String,dynamic> applicantDetails,BuildContext context)async{
+  //   try{
+  //     firestoreServices.applyJob(companyId: companyId, jobId: jobId, applicantDetails: applicantDetails);
+  //   }
+  //   catch(e){
+  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+  //     print(e.toString());
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -108,8 +109,8 @@ class UserJobDetailScreen extends StatelessWidget {
                 child: TextButton(
                   
                       onPressed: () {
-                        applyjob(companyId, jobTitle, {'name':'p1','age':20,'email':'p1@gmail.com'}, context);
-                        },
+                        Navigator.pushNamed(context, AppRoute.applyScreen,arguments: {'companyId':companyId,'jobId':jobTitle});
+                      },
                       
                       style: ButtonStyle(
                         

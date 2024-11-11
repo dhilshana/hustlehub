@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hastlehub/company/screens/addJobScreen.dart';
+import 'package:hastlehub/company/screens/googleMapScreen.dart';
 import 'package:hastlehub/company/screens/home.dart';
 import 'package:hastlehub/company/screens/jobDetailsScreen.dart';
 import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/services/authCheck.dart';
 import 'package:hastlehub/users/screens/appliedJobScreen.dart';
+import 'package:hastlehub/users/screens/applyScreen.dart';
 import 'package:hastlehub/users/screens/exploreScreen.dart';
 import 'package:hastlehub/users/screens/home.dart';
 import 'package:hastlehub/users/screens/jobDetailsScreen.dart';
@@ -78,6 +81,14 @@ Route<dynamic> generateRoute(RouteSettings routeSettings){
     case AppRoute.jobDetailScreen:{
       final jobData = routeSettings.arguments;
       return MaterialPageRoute(builder: (context) => UserJobDetailScreen(jobDetails: jobData));
+    }
+    case AppRoute.applyScreen:{
+      final jobData = routeSettings.arguments as Map<String,dynamic>;
+    return MaterialPageRoute(builder: (context) => ApplyScreen(jobData: jobData ,));
+    }
+    case AppRoute.googleMapScreen:{
+      final latlong = routeSettings.arguments as LatLng;
+      return MaterialPageRoute(builder: (context) => GoogleMapScreen(latlong: latlong));
     }
     
     default :

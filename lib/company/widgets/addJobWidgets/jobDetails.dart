@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/utils/constants.dart';
 
 class JobDetailsWidget extends StatefulWidget {
@@ -41,6 +44,38 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
   var _selectedTime,_selectedType;
   List<String> preferences =[];
   List<String> jobDesc =[];
+
+  Future<void> _navigateToGoogleMapScreen(BuildContext context) async {
+    // Check for permission and get the current location
+    LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Location permission is denied")),
+      );
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    // Convert position to LatLng
+    LatLng currentLocation = LatLng(position.latitude, position.longitude);
+
+    // Navigate to GoogleMapScreen with current location as argument
+    final selectedLocation = await Navigator.pushNamed(
+      context,
+      AppRoute.googleMapScreen,
+      arguments: currentLocation,
+    );
+     if (selectedLocation != null && selectedLocation is LatLng) {
+    // Store the selected location
+    LatLng location = selectedLocation;
+    print("Selected Location: ${location.latitude}, ${location.longitude}");
+     }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -223,19 +258,22 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
                 onChanged: (value) {
                   widget.location(value); 
                 },
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
+                    suffixIcon: IconButton(onPressed: (){
+                      _navigateToGoogleMapScreen(context);
+                    }, icon: const Icon(Icons.location_on_outlined)),
                     hintText: 'e.g. Banglore',
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                       fontSize: 15,
                       color: ktextColor
                     ),
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                    focusedBorder: OutlineInputBorder(
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                    focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(
                       color: kfontColor,
                     )),
-                    border: OutlineInputBorder()),
+                    border: const OutlineInputBorder()),
               ),
                 ],
               ),
