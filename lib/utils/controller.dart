@@ -72,6 +72,14 @@ Future<void> storeApplicationtoFireStore({required File resume,required String j
 
 }
 
+
+
+Future<List<Map<String,dynamic>>> fetchRecommendedajobs({required String userRole}) async{
+  List<Map<String,dynamic>> fetchedJobs = await firestoreServices.fetchRecommendedJobs(userRole: userRole);
+  return fetchedJobs;
+  
+}
+
 Future<List<Map<String,dynamic>>> fetchAndDisplayAllJobs({String? query}) async {
     // Fetch jobs posted by all companies
     List<Map<String, dynamic>> fetchedJobs = await firestoreServices.fetchAllJobs();

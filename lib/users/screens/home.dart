@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hastlehub/routes/routeConstants.dart';
+import 'package:hastlehub/services/auth_services.dart';
 import 'package:hastlehub/services/firestoreDataBase.dart';
 import 'package:hastlehub/users/screens/notificationScreen.dart';
 import 'package:hastlehub/users/screens/splashScreen.dart';
@@ -22,6 +24,34 @@ class UserHomeScreen extends StatefulWidget {
 
 class _UserHomeScreenState extends State<UserHomeScreen> {
   FirestoreServices firestoreServices = FirestoreServices();
+  bool showAll = false;
+  bool recommandations = true;
+  String? userRole;
+  Future<void> _getUserData() async {
+    String? userId = AuthServices().getUser();
+  if (userId == null) {
+    print("User ID is null.");
+    return;
+  }
+    try {
+      var userDoc = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(AuthServices().getUser())
+          .get();
+
+      setState(() {
+        userRole = userDoc['role'];
+      });
+    } catch (e) {
+      print("Error retrieving user data: $e");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,59 +124,119 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 "Find Your Perfect Job",
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 40),
               ),
-              ksizedBoxHeight,
-              const Row(
+              Row(
                 children: [
-                  Text(
-                    "Recommendations",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        showAll = false;
+                        recommandations = true;
+                      });
+                    },
+                    child: Text(
+                      "Recommendations",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: kfontColor),
+                    ),
                   ),
                   Spacer(),
-                  Text(
-                    "Show All",
-                    style: TextStyle(color: kshowAllColor),
-                  )
+                  TextButton(
+                      onPressed: () {
+                        setState(() {
+                          recommandations = false;
+                          showAll = true;
+                        });
+                      },
+                      child: Text(
+                        "Show All",
+                        style: TextStyle(color: kshowAllColor),
+                      ))
                 ],
               ),
-              ksizedBoxHeight,
-              FutureBuilder(
-                future: fetchAndDisplayAllJobs(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text(snapshot.error.toString()),
-                    );
-                  } else if (snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text('No data yet'),
-                    );
-                  } else {
-                    return Expanded(
-                      child: ListView.builder(
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                        context, AppRoute.jobDetailScreen,
-                                        arguments: snapshot.data![index])
-                                    .then((value) {
-                                  setState(() {});
-                                });
-                              },
-                              child: RecommendationWidget(
-                                jobDetails: snapshot.data![index],
-                              ));
+              if (showAll)
+                FutureBuilder(
+                  future: fetchAndDisplayAllJobs(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text(snapshot.error.toString()),
+                      );
+                    } else if (snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text('No data yet'),
+                      );
+                    } else {
+                      return Expanded(
+                        child: ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                          context, AppRoute.jobDetailScreen,
+                                          arguments: snapshot.data![index])
+                                      .then((value) {
+                                    setState(() {});
+                                  });
+                                },
+                                child: RecommendationWidget(
+                                  jobDetails: snapshot.data![index],
+                                ));
+                          },
+                        ),
+                      );
+                    }
+                  },
+                )
+              else if (recommandations)
+                userRole == null
+                    ? const Center(child: CircularProgressIndicator())
+                    : FutureBuilder(
+                        future: fetchRecommendedajobs(userRole: userRole!),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(snapshot.error.toString()),
+                            );
+                          } else if (snapshot.data!.isEmpty) {
+                            return const Center(
+                              child: Text('No data yet'),
+                            );
+                          } else {
+                            return Expanded(
+                              child: ListView.builder(
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushNamed(context,
+                                                AppRoute.jobDetailScreen,
+                                                arguments:
+                                                    snapshot.data![index])
+                                            .then((value) {
+                                          setState(() {});
+                                        });
+                                      },
+                                      child: RecommendationWidget(
+                                        jobDetails: snapshot.data![index],
+                                      ));
+                                },
+                              ),
+                            );
+                          }
                         },
-                      ),
-                    );
-                  }
-                },
-              )
+                      )
             ],
           ),
         ),
