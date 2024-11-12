@@ -38,6 +38,7 @@ class CompanyModel {
       'preference': job['preference'],
       'perks': job['perks'],
       'applications':[],
+      'latlng':job['latlng'],
     };
   }
 

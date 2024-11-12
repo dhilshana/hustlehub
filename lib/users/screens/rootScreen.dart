@@ -1,4 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/users/screens/appliedJobScreen.dart';
 import 'package:hastlehub/users/screens/exploreScreen.dart';
 import 'package:hastlehub/users/screens/home.dart';
@@ -26,6 +30,41 @@ List<Widget> pages =const [
   ];
 
   int selectedIndex = 0;
+  bool isloading = false;
+
+  Future<void> _navigateToGoogleMapScreen(BuildContext context) async {
+    // Check for permission and get the current location
+    LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Location permission is denied")),
+      );
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    // Convert position to LatLng
+    LatLng currentLocation = LatLng(position.latitude, position.longitude);
+
+    // Navigate to GoogleMapScreen with current location as argument
+    final selectedLocation = await Navigator.pushNamed(
+      context,
+      AppRoute.userGoogleMapScreen,
+      arguments: currentLocation,
+    );
+     if (selectedLocation != null && selectedLocation is LatLng) {
+    // Store the selected location
+    LatLng location = selectedLocation;
+    
+     }
+     setState(() {
+       isloading = false;
+     });
+  }
 
   
 
@@ -45,9 +84,6 @@ List<Widget> pages =const [
              setState(() {
                selectedIndex = value;
              });
-         
-            //  print("------------------");
-            //  print(selectedIndex);
            }
                   
                 
@@ -56,13 +92,21 @@ List<Widget> pages =const [
                 left: (MediaQuery.of(context).size.width / 2) -
                     30, // Center horizontally,
                 bottom: 30,
-                child: CircleAvatar(
-                  backgroundColor: Colors.greenAccent[700],
-                  foregroundColor: const Color.fromARGB(255, 32, 30, 30),  
-                  radius: 30,
-                  child: const Icon(
-                    Icons.location_on,
-                    size: 35,
+                child: GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      isloading = true;
+                    });
+                    _navigateToGoogleMapScreen(context);
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: Colors.greenAccent[700],
+                    foregroundColor: const Color.fromARGB(255, 32, 30, 30),  
+                    radius: 30,
+                    child: isloading?CupertinoActivityIndicator(): Icon(
+                      Icons.location_on,
+                      size: 35,
+                    ),
                   ),
                 ),
               )

@@ -21,6 +21,7 @@ import 'package:hastlehub/users/screens/rootScreen.dart';
 import 'package:hastlehub/users/screens/securityCheck.dart';
 import 'package:hastlehub/users/screens/settingScreen.dart';
 import 'package:hastlehub/users/screens/splashScreen.dart';
+import 'package:hastlehub/users/screens/userGoogleMapScreen.dart';
 import 'package:hastlehub/users/screens/verificationScreen.dart';
 import 'package:hastlehub/users/screens/welcomeScreen.dart';
 
@@ -89,6 +90,10 @@ Route<dynamic> generateRoute(RouteSettings routeSettings){
     case AppRoute.googleMapScreen:{
       final latlong = routeSettings.arguments as LatLng;
       return MaterialPageRoute(builder: (context) => GoogleMapScreen(latlong: latlong));
+    }
+    case AppRoute.userGoogleMapScreen:{
+      final latlong = routeSettings.arguments as LatLng;
+      return MaterialPageRoute(builder: (context) => UserGoogleMapScreen(latlong: latlong));
     }
     
     default :

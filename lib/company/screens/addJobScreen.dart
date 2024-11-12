@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hastlehub/company/models/companyModel.dart';
 import 'package:hastlehub/company/widgets/addJobWidgets/jobDetails.dart';
 import 'package:hastlehub/company/widgets/addJobWidgets/oppurtunityTypeWidget.dart';
@@ -34,6 +35,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
   String? initialSalary;
   String? finalSalary;
   List<String> perks = [];
+  LatLng? latlng;
 
   
 
@@ -47,6 +49,9 @@ class _AddJobScreenState extends State<AddJobScreen> {
         'jobLocation': location ?? jobType,
         'jobType': jobType ?? 'unknown',
         'experience': yearsOfExp ?? '0',
+        'latlng':latlng != null
+          ? {'latitude': latlng!.latitude, 'longitude': latlng!.longitude}
+          : 'unknown',
       
         'date': DateTime.now().toString() ,
         'desc': jobDesc,
@@ -143,6 +148,11 @@ class _AddJobScreenState extends State<AddJobScreen> {
                   location: (value) {
                     setState(() {
                       location = value;
+                    });
+                  },
+                  latlng:(value){
+                    setState(() {
+                      latlng = value;
                     });
                   },
                   jobTime: (value) {

@@ -10,6 +10,7 @@ class JobDetailsWidget extends StatefulWidget {
   ValueChanged<String?> skillsRequired;
   ValueChanged<String?> jobType;
   ValueChanged<String?> location;
+  ValueChanged<LatLng> latlng;
   ValueChanged<String?> jobTime;
   ValueChanged<int?> openingsCount;
   ValueChanged<List<String>> jobDesc;
@@ -23,7 +24,8 @@ class JobDetailsWidget extends StatefulWidget {
   required this.openingsCount,
 required this.jobDesc,
 required this.preferences,
-required this.location
+required this.location,
+required this.latlng,
 
   });
 
@@ -41,6 +43,7 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
   TextEditingController descController = TextEditingController();
   TextEditingController preferenceController = TextEditingController();
   TextEditingController locationController = TextEditingController();
+  TextEditingController latlngController = TextEditingController();
   var _selectedTime,_selectedType;
   List<String> preferences =[];
   List<String> jobDesc =[];
@@ -72,7 +75,9 @@ class _JobDetailsWidgetState extends State<JobDetailsWidget> {
      if (selectedLocation != null && selectedLocation is LatLng) {
     // Store the selected location
     LatLng location = selectedLocation;
-    print("Selected Location: ${location.latitude}, ${location.longitude}");
+    setState(() {
+      widget.latlng(location);
+    });
      }
   }
 
