@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hastlehub/firebase_options.dart';
 import 'package:hastlehub/routes/routes.dart';
 import 'package:hastlehub/services/authCheck.dart';
+import 'package:hastlehub/services/local_database.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,6 +12,8 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
 );
+LocalDatabse ldb = LocalDatabse();
+await ldb.initializeDb();
   runApp(const MainApp());
 }
 

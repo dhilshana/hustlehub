@@ -173,7 +173,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               });
                             });
                           },
-                          child: RecommendationWidget(jobDetails: snapshot.data![index],));
+                          child: RecommendationWidget(jobDetails: snapshot.data![index],
+                          index: index,));
                       },
                     );
                     }

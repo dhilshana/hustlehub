@@ -13,7 +13,8 @@ File ? imageFile;
 FireStorage fireStorage = FireStorage();
   FirestoreServices firestoreServices = FirestoreServices();
 
-  final ImagePicker _picker = ImagePicker(); 
+  final ImagePicker _picker = ImagePicker();
+
   
 
 // Function to pick an image from the gallery

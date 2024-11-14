@@ -133,7 +133,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         recommandations = true;
                       });
                     },
-                    child: Text(
+                    child: const Text(
                       "Recommendations",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -141,7 +141,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           color: kfontColor),
                     ),
                   ),
-                  Spacer(),
+                 const  Spacer(),
                   TextButton(
                       onPressed: () {
                         setState(() {
@@ -149,7 +149,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           showAll = true;
                         });
                       },
-                      child: Text(
+                      child: const Text(
                         "Show All",
                         style: TextStyle(color: kshowAllColor),
                       ))
@@ -187,6 +187,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                 },
                                 child: RecommendationWidget(
                                   jobDetails: snapshot.data![index],
+                                  index: index,
                                 ));
                           },
                         ),
@@ -230,6 +231,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                       },
                                       child: RecommendationWidget(
                                         jobDetails: snapshot.data![index],
+                                        index: index,
                                       ));
                                 },
                               ),

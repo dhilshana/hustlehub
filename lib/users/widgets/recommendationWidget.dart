@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:hastlehub/services/local_database.dart';
 import 'package:hastlehub/utils/constants.dart';
 import 'package:hastlehub/users/widgets/jobdetailsWidget.dart';
+import 'package:hastlehub/utils/controller.dart';
 
 class RecommendationWidget extends StatefulWidget {
   Map<String, dynamic> jobDetails;
-  RecommendationWidget({super.key, required this.jobDetails});
+  int index;
+  RecommendationWidget({super.key, required this.jobDetails,required this.index});
 
   @override
   State<RecommendationWidget> createState() => _RecommendationWidgetState();
 }
 
 class _RecommendationWidgetState extends State<RecommendationWidget> {
-
-   String calculateTimeAgo(String? jobDate) {
+  String calculateTimeAgo(String? jobDate) {
     if (jobDate == null) return "Date not available - ";
 
     DateTime postedDate = DateTime.parse(jobDate); // Parse the job date
@@ -32,9 +34,42 @@ class _RecommendationWidgetState extends State<RecommendationWidget> {
     }
   }
 
+  LocalDatabse ldb = LocalDatabse();
+  bool isSaved = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfSaved();
+  }
+
+  Future<void> _checkIfSaved() async {
+    isSaved = await ldb.isJobSaved(
+      widget.jobDetails['jobTitle'],
+      widget.jobDetails['companyName'],
+    );
+    setState(() {});
+  }
+  
+
 
   @override
   Widget build(BuildContext context) {
+    ldb.retrieveValue();
+    String title = widget.jobDetails['jobTitle'];
+    String companyName = widget.jobDetails['companyName'];
+    String location = widget.jobDetails['jobDetails']['jobLocation'];
+    String initialSalary = widget.jobDetails['jobDetails']['initialSalary'] +
+        widget.jobDetails['jobDetails']['currency'];
+    String finalSalary = widget.jobDetails['jobDetails']['finalSalary'] +
+        widget.jobDetails['jobDetails']['currency'];
+    String jobType = widget.jobDetails['jobDetails']['jobType'];
+    String oppurtunityType = widget.jobDetails['jobDetails']['oppurtunityType'];
+    int experience = widget.jobDetails['jobDetails']['experience'];
+    String dateOfPost = widget.jobDetails['jobDetails']['date'];
+    int applicationCount =
+        widget.jobDetails['jobDetails']['applicationCount'] ?? 0;
+
     return Container(
       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 15.0),
       margin: const EdgeInsets.only(bottom: 10),
@@ -57,49 +92,72 @@ class _RecommendationWidgetState extends State<RecommendationWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.jobDetails['jobTitle'],
-                    style: TextStyle(
+                    title,
+                    style: const TextStyle(
                         fontWeight: FontWeight.bold, color: kfontColor),
                   ),
-                  Text(
-                    widget.jobDetails['companyName'],
-                  )
+                  Text(companyName)
                 ],
               ),
               const Spacer(),
               IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.bookmark_outline))
+                  onPressed: () async{
+                    
+                     setState(() {
+                    isSaved = !isSaved;
+                  });
+                    if (isSaved){
+                    await ldb.insertValue(
+                        title: title,
+                        companyName: companyName,
+                        location: location,
+                        initialSalary: initialSalary,
+                        finalSalary: finalSalary,
+                        jobType: jobType,
+                        oppurtunityType: oppurtunityType,
+                        dateOfPost: dateOfPost,
+                        experience: experience,
+                        applicationCount: applicationCount,
+                        isSaved:true);
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Saved Successfully')));
+                    }
+                    else{
+                       await ldb.deleteValue(title: title, companyName: companyName, location: location, initialSalary: initialSalary, finalSalary: finalSalary, jobType: jobType, oppurtunityType: oppurtunityType, dateOfPost: dateOfPost, experience: experience, applicationCount: applicationCount) ;
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Removed Successefully')));
+                    }
+                  },
+                  icon:  Icon(isSaved?Icons.bookmark: Icons.bookmark_outline))
             ],
           ),
           kheightinRec,
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.location_on,
                 size: 20,
               ),
               widthInRow,
               Text(
-                widget.jobDetails['jobDetails']['jobLocation'],
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: kfontColor),
+                location,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, color: kfontColor),
               )
             ],
           ),
           kheightinRec,
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.paid,
                 size: 20,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               Text(
-                "${widget.jobDetails['jobDetails']['initialSalary']}${widget.jobDetails['jobDetails']['currency']} - ${widget.jobDetails['jobDetails']['finalSalary']}${widget.jobDetails['jobDetails']['currency']} ",
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: kfontColor),
+                "$initialSalary - $finalSalary",
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, color: kfontColor),
               )
             ],
           ),
@@ -112,21 +170,21 @@ class _RecommendationWidgetState extends State<RecommendationWidget> {
                   Icons.video_camera_front,
                   size: 18,
                 ),
-                text: widget.jobDetails['jobDetails']['jobType'],
+                text: jobType,
               ),
               JobScreenWidget(
                 icon: const Icon(
                   Icons.access_time_filled,
                   size: 18,
                 ),
-                text: widget.jobDetails['jobDetails']['oppurtunityType'],
+                text: oppurtunityType,
               ),
               JobScreenWidget(
                 icon: const Icon(
                   Icons.business_center,
                   size: 18,
                 ),
-                text: "${widget.jobDetails['jobDetails']['experience']} Year of Exp",
+                text: "$experience Year of Exp",
               ),
             ],
           ),
@@ -139,24 +197,24 @@ class _RecommendationWidgetState extends State<RecommendationWidget> {
           kheightinRec,
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.history,
                 size: 18,
                 color: ktextColor,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               Text(
-                calculateTimeAgo(widget.jobDetails['jobDetails']['date']),
-                style: TextStyle(
+                calculateTimeAgo(dateOfPost),
+                style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
                     color: ktextColor),
               ),
               Text(
-                '${widget.jobDetails['jobDetails']['applicationCount']??'0'} Applications',
-                style: TextStyle(
+                '$applicationCount Applications',
+                style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                   color: kshowAllColor,

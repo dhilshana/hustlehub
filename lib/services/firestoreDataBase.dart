@@ -144,18 +144,27 @@ Future<List<Map<String,dynamic>>> fetchRecommendedJobs({required String userRole
   List<Map<String,dynamic>> recommandedJobs = [];
   try{
     QuerySnapshot<Map<String,dynamic>> querySnapshot = await FirebaseFirestore.instance.collection('Companies').get();
+   
+   
     for (var doc in querySnapshot.docs){
+      
       Map<String,dynamic> comapnyData = doc.data();
+      
       String docId = doc.id;
-      String companyName = comapnyData['comapany'];
+      String companyName = comapnyData['company'];
       String companyEmail = comapnyData['email'];
+       
       CollectionReference jobsRef = doc.reference.collection('Jobs');
       QuerySnapshot jobSnapshot = await jobsRef.get();
+      
 
       for (var jobDoc in jobSnapshot.docs){
+       
         String jobTitle = jobDoc.id;
+       
         String titleToLowerCase = jobTitle.toLowerCase();
-        if (titleToLowerCase == userRole!.toLowerCase() || titleToLowerCase.contains(userRole.toLowerCase()) ){
+        String roleToLowerCase = userRole.toLowerCase();
+        if (titleToLowerCase == roleToLowerCase || titleToLowerCase.contains(roleToLowerCase) || roleToLowerCase.contains(titleToLowerCase) ){
           Map<String,dynamic> jobDetails = jobDoc.data() as Map<String,dynamic>;
           recommandedJobs.add({
             'docId':docId,
