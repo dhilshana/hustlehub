@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:hastlehub/services/appliedJobsDatabase.dart';
 import 'package:hastlehub/utils/constants.dart';
 
 // ignore: must_be_immutable
 class AppliedJobWidget extends StatefulWidget {
+  Map<String,dynamic> jobData;
 
   String selType;
-  AppliedJobWidget({super.key,required this.selType});
+  AppliedJobWidget({super.key,required this.selType,required this.jobData});
 
   @override
   State<AppliedJobWidget> createState() => _AppliedJobWidgetState();
 }
 
 class _AppliedJobWidgetState extends State<AppliedJobWidget> {
+
+
+ 
 
 Color selTypeColor(){
   Color textColor =Colors.black;
@@ -87,30 +92,30 @@ Color selTypeColor(){
               radius: 25,
             ),
             const SizedBox(width: 10,),
-            const Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 
-                Text("Visual Designer",
+                Text(widget.jobData['job_title'],
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 18
                 ),
                 ),
-                Text("Algorithma",
+                Text(widget.jobData['company_name']??'',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14
                 ),
                 ),
-                Text("Kochi, Kerala, India (On-site)",
+                Text(widget.jobData['job_location'],
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 12,
                   color: ktextColor
                 ),
                 ),
-                Text("Submitted, June 23, 2024",
+                Text("Submitted, ${widget.jobData['date']}",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 11,

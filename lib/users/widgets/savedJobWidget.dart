@@ -1,58 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:hastlehub/services/local_database.dart';
-import 'package:hastlehub/utils/constants.dart';
 import 'package:hastlehub/users/widgets/jobdetailsWidget.dart';
+import 'package:hastlehub/utils/constants.dart';
 import 'package:hastlehub/utils/controller.dart';
 
-class RecommendationWidget extends StatefulWidget {
-  Map<String, dynamic> jobDetails;
+class SavedJobWidget extends StatefulWidget {
+   Map<String, dynamic> jobDetails;
   int index;
-  RecommendationWidget({super.key, required this.jobDetails,required this.index});
+  final VoidCallback onJobChanged;
+  SavedJobWidget({super.key,required this.index,required this.jobDetails,required this.onJobChanged});
 
   @override
-  State<RecommendationWidget> createState() => _RecommendationWidgetState();
+  State<SavedJobWidget> createState() => _SavedJobWidgetState();
 }
 
-class _RecommendationWidgetState extends State<RecommendationWidget> {
-  
+class _SavedJobWidgetState extends State<SavedJobWidget> {
 
-  LocalDatabse ldb = LocalDatabse();
+   LocalDatabse ldb = LocalDatabse();
   bool isSaved = false;
 
-  @override
+ @override
   void initState() {
     super.initState();
     _checkIfSaved();
   }
 
-  Future<void> _checkIfSaved() async {
-    
+Future<void> _checkIfSaved() async {
     isSaved = await ldb.isJobSaved(
-      widget.jobDetails['jobTitle'],
-      widget.jobDetails['companyName'],
+      widget.jobDetails['title'],
+      widget.jobDetails['company_name'],
     );
     setState(() {});
   
   }
-  
-
 
   @override
   Widget build(BuildContext context) {
 
-    String title = widget.jobDetails['jobTitle'];
-    String companyName = widget.jobDetails['companyName'];
-    String location = widget.jobDetails['jobDetails']['jobLocation'];
-    String initialSalary = widget.jobDetails['jobDetails']['initialSalary'] +
-        widget.jobDetails['jobDetails']['currency'];
-    String finalSalary = widget.jobDetails['jobDetails']['finalSalary'] +
-        widget.jobDetails['jobDetails']['currency'];
-    String jobType = widget.jobDetails['jobDetails']['jobType'];
-    String oppurtunityType = widget.jobDetails['jobDetails']['oppurtunityType'];
-    int experience = widget.jobDetails['jobDetails']['experience'];
-    String dateOfPost = widget.jobDetails['jobDetails']['date'];
+String title = widget.jobDetails['title'];
+    String companyName = widget.jobDetails['company_name'];
+    String location = widget.jobDetails['location'];
+    String initialSalary = widget.jobDetails['initial_salary'];
+    String finalSalary = widget.jobDetails['final_salary'];
+    String jobType = widget.jobDetails['job_type'];
+    String oppurtunityType = widget.jobDetails['opportunity_type'];
+    int experience = widget.jobDetails['experience'];
+    String dateOfPost = widget.jobDetails['date_of_post'];
     int applicationCount =
-        widget.jobDetails['jobDetails']['applicationCount'] ?? 0;
+        widget.jobDetails['application_count'] ?? 0;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 15.0),
@@ -86,9 +81,9 @@ class _RecommendationWidgetState extends State<RecommendationWidget> {
               const Spacer(),
               IconButton(
                   onPressed: () async{
-                    
-                     setState(() {
                     isSaved = !isSaved;
+                     setState(() {
+                    
                   });
                     if (isSaved){
                     await ldb.insertValue(
@@ -107,6 +102,7 @@ class _RecommendationWidgetState extends State<RecommendationWidget> {
                     }
                     else{
                        await ldb.deleteValue(title: title, companyName: companyName, location: location, initialSalary: initialSalary, finalSalary: finalSalary, jobType: jobType, oppurtunityType: oppurtunityType, dateOfPost: dateOfPost, experience: experience, applicationCount: applicationCount) ;
+                          widget.onJobChanged();
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Removed Successefully')));
                     }
                   },

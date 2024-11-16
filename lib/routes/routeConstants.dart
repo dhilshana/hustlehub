@@ -21,5 +21,7 @@ class AppRoute{
   static const applyScreen = '/applyScreen';
   static const googleMapScreen = '/googleMapScreen';
   static const userGoogleMapScreen = '/userGoogleMapScreen';
+  static const savedJobsScreen = '/savedJobScreen';
+  static const appliedJobDetailScreen = '/appliedJobDetailScreen';
 
 }

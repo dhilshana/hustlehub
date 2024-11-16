@@ -29,10 +29,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   String? userRole;
   Future<void> _getUserData() async {
     String? userId = AuthServices().getUser();
-  if (userId == null) {
-    print("User ID is null.");
-    return;
-  }
+    if (userId == null) {
+      print("User ID is null.");
+      return;
+    }
     try {
       var userDoc = await FirebaseFirestore.instance
           .collection('Users')
@@ -69,9 +69,28 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 fontSize: 30),
           ),
           centerTitle: true,
-          leading: const Icon(
-            Icons.list,
-            size: 30,
+          leading: PopupMenuButton<int>(
+            onSelected: (value) {
+              if (value == 1) {
+                Navigator.pushNamed(context, AppRoute.savedJobsScreen);
+              } else if (value == 2) {
+                print("Logout selected");
+              }
+            },
+            icon: const Icon(
+              Icons.list,
+              size: 30,
+            ),
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: 1,
+                child: Text('Saved Jobs'),
+              ),
+              PopupMenuItem(
+                value: 2,
+                child: Text('Logout'),
+              ),
+            ],
           ),
           actions: [
             GestureDetector(
@@ -141,7 +160,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           color: kfontColor),
                     ),
                   ),
-                 const  Spacer(),
+                  const Spacer(),
                   TextButton(
                       onPressed: () {
                         setState(() {

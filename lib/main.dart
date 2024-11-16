@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hastlehub/firebase_options.dart';
 import 'package:hastlehub/routes/routes.dart';
+import 'package:hastlehub/services/appliedJobsDatabase.dart';
 import 'package:hastlehub/services/authCheck.dart';
 import 'package:hastlehub/services/local_database.dart';
 
@@ -13,7 +14,9 @@ void main() async{
     options: DefaultFirebaseOptions.currentPlatform,
 );
 LocalDatabse ldb = LocalDatabse();
+AppliedJobsDatabase ajdb = AppliedJobsDatabase();
 await ldb.initializeDb();
+await ajdb.initializeDb();
   runApp(const MainApp());
 }
 

@@ -6,6 +6,7 @@ import 'package:hastlehub/company/screens/home.dart';
 import 'package:hastlehub/company/screens/jobDetailsScreen.dart';
 import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/services/authCheck.dart';
+import 'package:hastlehub/users/screens/appliedJobDetailScreen.dart';
 import 'package:hastlehub/users/screens/appliedJobScreen.dart';
 import 'package:hastlehub/users/screens/applyScreen.dart';
 import 'package:hastlehub/users/screens/exploreScreen.dart';
@@ -18,12 +19,14 @@ import 'package:hastlehub/users/screens/personalInfoScreen.dart';
 import 'package:hastlehub/users/screens/profileScreen.dart';
 import 'package:hastlehub/users/screens/roleScreen.dart';
 import 'package:hastlehub/users/screens/rootScreen.dart';
+import 'package:hastlehub/users/screens/savedJobsScreen.dart';
 import 'package:hastlehub/users/screens/securityCheck.dart';
 import 'package:hastlehub/users/screens/settingScreen.dart';
 import 'package:hastlehub/users/screens/splashScreen.dart';
 import 'package:hastlehub/users/screens/userGoogleMapScreen.dart';
 import 'package:hastlehub/users/screens/verificationScreen.dart';
 import 'package:hastlehub/users/screens/welcomeScreen.dart';
+import 'package:path/path.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings){
   switch(routeSettings.name){
@@ -94,6 +97,14 @@ Route<dynamic> generateRoute(RouteSettings routeSettings){
     case AppRoute.userGoogleMapScreen:{
       final latlong = routeSettings.arguments as LatLng;
       return MaterialPageRoute(builder: (context) => UserGoogleMapScreen(latlong: latlong));
+    }
+
+    case AppRoute.savedJobsScreen:{
+      return MaterialPageRoute(builder: (context)=> SavedJobsScreen());
+    }
+    case AppRoute.appliedJobDetailScreen:{
+      final jobDetails = routeSettings.arguments as Map<String,dynamic>;
+      return MaterialPageRoute(builder: (context)=> AppliedJobDetailScreen(jobDetails: jobDetails));
     }
     
     default :

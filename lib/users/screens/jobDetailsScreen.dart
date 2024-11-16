@@ -10,20 +10,13 @@ class UserJobDetailScreen extends StatelessWidget {
   UserJobDetailScreen({super.key,required this.jobDetails});
   FirestoreServices firestoreServices = FirestoreServices();
 
-  // Future<void> applyjob(String companyId,String jobId,Map<String,dynamic> applicantDetails,BuildContext context)async{
-  //   try{
-  //     firestoreServices.applyJob(companyId: companyId, jobId: jobId, applicantDetails: applicantDetails);
-  //   }
-  //   catch(e){
-  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
-  //     print(e.toString());
-  //   }
-  // }
+ 
 
   @override
   Widget build(BuildContext context) {
-    String companyId = jobDetails['docId'];
-    final String jobTitle = jobDetails['jobTitle'] ;
+    String companyId = jobDetails['docId']??'0';
+    String companyName = jobDetails['companyName'];
+    final String jobTitle = jobDetails['jobTitle'] ??jobDetails['title'];
      String initialSalary = jobDetails['jobDetails']['initialSalary'] ; 
      String finalSalary = jobDetails['jobDetails']['finalSalary'] ; 
      String currency = jobDetails['jobDetails']['currency'];
@@ -39,6 +32,27 @@ class UserJobDetailScreen extends StatelessWidget {
      int experience = jobDetails['jobDetails']['experience'];
      int openings = jobDetails['jobDetails']['openingsCount'];
      String skill = jobDetails['jobDetails']['skills'];
+     String oppurtunityType = jobDetails['jobDetails']['oppurtunityType'];
+
+     Map<String,dynamic> details ={
+      'company_id':companyId,
+      'company_name':companyName,
+      'oppurtunity_type':oppurtunityType,
+      'job_title':jobTitle,
+      'salary':'${initialSalary+currency} - ${finalSalary+currency}',
+      'job_location':jobLocation,
+      'application_count':applicationCount,
+      'date':formattedDate,
+      'job_type':jobType,
+      'job_time':jobTime,
+      'perks':perks,
+      'preference':prefernce,
+      'description':description,
+      'experience':experience,
+      'openings':openings,
+      'skill':skill
+
+     };
 
     
 
@@ -109,7 +123,7 @@ class UserJobDetailScreen extends StatelessWidget {
                 child: TextButton(
                   
                       onPressed: () {
-                        Navigator.pushNamed(context, AppRoute.applyScreen,arguments: {'companyId':companyId,'jobId':jobTitle});
+                        Navigator.pushNamed(context, AppRoute.applyScreen,arguments: details,);
                       },
                       
                       style: ButtonStyle(

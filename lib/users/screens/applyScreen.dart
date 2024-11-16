@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hastlehub/company/widgets/jobDetailScreenWidget.dart';
+import 'package:hastlehub/services/appliedJobsDatabase.dart';
 import 'package:hastlehub/services/firebaseStorage.dart';
 import 'package:hastlehub/users/widgets/ApplyTextFieldWidget.dart';
 import 'package:hastlehub/utils/constants.dart';
@@ -24,6 +25,8 @@ class _ApplyScreenState extends State<ApplyScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController introController = TextEditingController();
+
+  AppliedJobsDatabase ajdb = AppliedJobsDatabase();
 
   bool isLoading = false;
 
@@ -88,13 +91,35 @@ class _ApplyScreenState extends State<ApplyScreen> {
 
                       if (resume != null) {
                         await storeApplicationtoFireStore(
-                            companyId: widget.jobData['companyId'],
-                            jobId: widget.jobData['jobId'],
+                            companyId: widget.jobData['company_id'],
+                            jobId: widget.jobData['job_title'],
                             name: nameController.text,
                             email: emailController.text,
                             phno: phoneController.text,
                             indro: introController.text,
                             resume: File(resume!.path!));
+                            print(widget.jobData);
+
+                          await ajdb.insertValue(
+                            opportunity_type: widget.jobData['oppurtunity_type'],
+                            companyId: widget.jobData['company_id'], 
+                            jobTime: widget.jobData['job_time'], 
+                            perks: widget.jobData['perks'], 
+                            preference: widget.jobData['preference'], 
+                            description: widget.jobData['description'], 
+                            openings: widget.jobData['openings'], 
+                            skill: widget.jobData['skill'], 
+                            title: widget.jobData['job_title'], 
+                            companyName: widget.jobData['company_name'], 
+                            location: widget.jobData['job_location'], 
+                            salary: widget.jobData['salary'], 
+                            jobType: widget.jobData['job_type'], 
+                            oppurtunityType: widget.jobData['oppurtunity_type'], 
+                            dateOfPost: widget.jobData['date'], 
+                            experience: widget.jobData['experience'], 
+                            applicationCount: widget.jobData['application_count'], 
+                            );
+
 
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Application sent successfully')));
                           isLoading = false;
@@ -104,6 +129,7 @@ class _ApplyScreenState extends State<ApplyScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No resume attached')));
                       }
                     } catch (e) {
+                      print(e);
                       ScaffoldMessenger.of(context)
                           .showSnackBar(SnackBar(content: Text(e.toString())));
 
