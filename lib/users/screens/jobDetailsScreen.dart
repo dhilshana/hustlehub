@@ -14,6 +14,7 @@ class UserJobDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     String companyId = jobDetails['docId']??'0';
     String companyName = jobDetails['companyName'];
     final String jobTitle = jobDetails['jobTitle'] ??jobDetails['title'];
@@ -35,6 +36,9 @@ class UserJobDetailScreen extends StatelessWidget {
      String oppurtunityType = jobDetails['jobDetails']['oppurtunityType'];
 
      Map<String,dynamic> details ={
+      'userName':jobDetails['userName'],
+      'userEmail':jobDetails['userEmail'],
+      'userPhone':jobDetails['userPhone'],
       'company_id':companyId,
       'company_name':companyName,
       'oppurtunity_type':oppurtunityType,

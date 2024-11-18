@@ -29,11 +29,17 @@ class RecommandationJobsWidget extends StatelessWidget {
             ),),
           ),
           widthInRow,
-                Text(value is String ? value.toUpperCase():value is List? value.join('\n'):value,style: TextStyle(
-            color: kfontColor,
-            fontSize: 15,
-            fontWeight: FontWeight.w500
-          ),)
+                Flexible(
+                  
+                  child: Text(
+                    softWrap: true,
+                    overflow: TextOverflow.clip,
+                    value is String ? value.toUpperCase():value is List? value.join('\n'):value,style: TextStyle(
+                              color: kfontColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500
+                            ),),
+                )
               ],
             );
   

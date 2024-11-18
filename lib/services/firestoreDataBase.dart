@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hastlehub/company/models/companyModel.dart';
 import 'package:hastlehub/users/models/usermodel.dart';
 import 'package:hastlehub/services/auth_services.dart';
+import 'package:hastlehub/utils/controller.dart';
 
 class FirestoreServices{
   
@@ -246,9 +247,53 @@ Future<void> applyJob({
       'applicationCount': FieldValue.increment(1), // Increment application count
       'applications': FieldValue.arrayUnion([applicantDetails]), // Add applicant details
     });
-    print('Application submitted successfully');
   } catch (e) {
     print('Error applying for job: $e');
+  }
+}
+
+Future<String?> fetchStatusOfApplication({required String companyId,required String jobId,required String name,required String email,required String phone}) async{
+   
+  try{
+    
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+     DocumentSnapshot<Map<String, dynamic>> jobDocSnapshot = await firestore.collection('Companies').doc(companyId).collection('Jobs').doc(jobId).get();
+
+     if (jobDocSnapshot.exists) {
+      // Retrieve the `applications` field from the document
+      List<dynamic> applications = jobDocSnapshot.data()?['applications'] ?? [];
+
+       var applicantIndex = applications.indexWhere((applicant) =>
+          applicant['name'] == name &&
+          applicant['email'] == email &&
+          applicant['phone'] == phone);
+
+        if(applicantIndex != -1){
+          String status = applications[applicantIndex]['status']?? 'Status not updated';
+         
+          return status;
+        }
+     }
+        return null;
+     
+
+  }
+  catch(e){
+     print(e);
+    return null;
+  }
+}
+
+Future<void> updateEmployeeCount({required int data})async{
+  try{
+     String? id = AuthServices().getUser();
+      if(id != null){
+     await FirebaseFirestore.instance.collection('Companies').doc(id).update({'employeeCount':data});
+      }
+    }
+    catch(e){
+     
+      rethrow;
   }
 }
 

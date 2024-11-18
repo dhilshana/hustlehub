@@ -8,9 +8,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hastlehub/company/widgets/jobDetailScreenWidget.dart';
 import 'package:hastlehub/services/appliedJobsDatabase.dart';
 import 'package:hastlehub/services/firebaseStorage.dart';
+import 'package:hastlehub/services/userDataBase.dart';
 import 'package:hastlehub/users/widgets/ApplyTextFieldWidget.dart';
 import 'package:hastlehub/utils/constants.dart';
 import 'package:hastlehub/utils/controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApplyScreen extends StatefulWidget {
   Map<String, dynamic> jobData;
@@ -27,10 +29,13 @@ class _ApplyScreenState extends State<ApplyScreen> {
   TextEditingController introController = TextEditingController();
 
   AppliedJobsDatabase ajdb = AppliedJobsDatabase();
+  UserDataBase udb = UserDataBase();
 
   bool isLoading = false;
 
   PlatformFile? resume;
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +55,10 @@ class _ApplyScreenState extends State<ApplyScreen> {
                 controller: emailController, hintText: 'Email'),
             ksizedBoxHeight,
             ApplyTextFieldWidget(
-                controller: phoneController, hintText: 'Phone No',type: 'number',),
+              controller: phoneController,
+              hintText: 'Phone No',
+              type: 'number',
+            ),
             ksizedBoxHeight,
             ApplyTextFieldWidget(
                 controller: introController,
@@ -84,6 +92,9 @@ class _ApplyScreenState extends State<ApplyScreen> {
               width: double.infinity,
               child: TextButton(
                   onPressed: () async {
+            
+                    
+
                     try {
                       setState(() {
                         isLoading = true;
@@ -98,35 +109,36 @@ class _ApplyScreenState extends State<ApplyScreen> {
                             phno: phoneController.text,
                             indro: introController.text,
                             resume: File(resume!.path!));
-                            print(widget.jobData);
 
-                          await ajdb.insertValue(
-                            opportunity_type: widget.jobData['oppurtunity_type'],
-                            companyId: widget.jobData['company_id'], 
-                            jobTime: widget.jobData['job_time'], 
-                            perks: widget.jobData['perks'], 
-                            preference: widget.jobData['preference'], 
-                            description: widget.jobData['description'], 
-                            openings: widget.jobData['openings'], 
-                            skill: widget.jobData['skill'], 
-                            title: widget.jobData['job_title'], 
-                            companyName: widget.jobData['company_name'], 
-                            location: widget.jobData['job_location'], 
-                            salary: widget.jobData['salary'], 
-                            jobType: widget.jobData['job_type'], 
-                            oppurtunityType: widget.jobData['oppurtunity_type'], 
-                            dateOfPost: widget.jobData['date'], 
-                            experience: widget.jobData['experience'], 
-                            applicationCount: widget.jobData['application_count'], 
-                            );
+                        await ajdb.insertValue(
+                          opportunity_type: widget.jobData['oppurtunity_type'],
+                          companyId: widget.jobData['company_id'],
+                          jobTime: widget.jobData['job_time'],
+                          perks: widget.jobData['perks'],
+                          preference: widget.jobData['preference'],
+                          description: widget.jobData['description'],
+                          openings: widget.jobData['openings'],
+                          skill: widget.jobData['skill'],
+                          title: widget.jobData['job_title'],
+                          companyName: widget.jobData['company_name'],
+                          location: widget.jobData['job_location'],
+                          salary: widget.jobData['salary'],
+                          jobType: widget.jobData['job_type'],
+                          oppurtunityType: widget.jobData['oppurtunity_type'],
+                          dateOfPost: widget.jobData['date'],
+                          experience: widget.jobData['experience'],
+                          applicationCount: widget.jobData['application_count'],
+                        );
+                        await udb.insertValue(companyId: widget.jobData['company_id'], jobId: widget.jobData['job_title'], name: nameController.text, email: emailController.text, phone: phoneController.text,);
+                        udb.retrieveValue();
 
-
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Application sent successfully')));
-                          isLoading = false;
-                          Navigator.pop(context);
-
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Application sent successfully')));
+                        isLoading = false;
+                        Navigator.pop(context);
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No resume attached')));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('No resume attached')));
                       }
                     } catch (e) {
                       print(e);

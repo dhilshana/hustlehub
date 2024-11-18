@@ -15,6 +15,7 @@ class AppliedJobWidget extends StatefulWidget {
 
 class _AppliedJobWidgetState extends State<AppliedJobWidget> {
 
+AppliedJobsDatabase ajdb = AppliedJobsDatabase();
 
  
 
@@ -42,6 +43,22 @@ Color selTypeColor(){
   Widget build(BuildContext context) {
     return Dismissible(
       key: UniqueKey(),
+      onDismissed: (direction) async{
+        await ajdb.deleteValue(
+          companyId: widget.jobData['company_id'], 
+          jobTime: widget.jobData['job_time'], 
+          opportunity_type: widget.jobData['opportunity_type'], 
+          openings: widget.jobData['openings'], 
+          skill: widget.jobData['skill'], 
+          title: widget.jobData['job_title'], 
+          companyName: widget.jobData['company_name'], 
+          location: widget.jobData['job_location'], 
+          salary: widget.jobData['salary'], 
+          jobType: widget.jobData['job_type'], 
+          dateOfPost: widget.jobData['date'], 
+          experience: widget.jobData['experience'], 
+          applicationCount: widget.jobData['application_count']);
+      },
       direction: DismissDirection.endToStart,
       background: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),

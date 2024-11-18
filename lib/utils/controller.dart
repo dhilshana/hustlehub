@@ -15,6 +15,9 @@ FireStorage fireStorage = FireStorage();
 
   final ImagePicker _picker = ImagePicker();
 
+
+
+
 String calculateTimeAgo(String? jobDate) {
     if (jobDate == null) return "Date not available - ";
 
@@ -90,6 +93,60 @@ Future<void> storeApplicationtoFireStore({required File resume,required String j
 
 
 }
+
+Future<void> updateStatus({
+  required String name,
+  required String email,
+  required String phno,
+  required String status, // The status to be updated (approved, rejected, etc.)
+  required String companyId,
+  required String jobId,
+}) async {
+  try {
+    // Get the job document from Firestore
+    var jobDocSnapshot = await FirebaseFirestore.instance
+        .collection('Companies') // Companies collection
+        .doc(companyId) // Specific company ID
+        .collection('Jobs') // Jobs collection
+        .doc(jobId) // Specific job ID
+        .get();
+
+    // Check if the job exists
+    if (jobDocSnapshot.exists) {
+      // Get the job data
+      var jobData = jobDocSnapshot.data();
+
+      // Assuming applicants are stored in an "applications" field (as a list of maps)
+      List<dynamic> applicants = jobData?['applications'] ?? [];
+
+      // Find the applicant with the matching name, email, and phone
+      var applicantIndex = applicants.indexWhere((applicant) =>
+          applicant['name'] == name &&
+          applicant['email'] == email &&
+          applicant['phone'] == phno);
+
+      if (applicantIndex != -1) {
+        // If a match is found, update the status for the applicant
+        applicants[applicantIndex]['status'] = status;
+        
+        // Update the job document with the new applicants list
+        await jobDocSnapshot.reference.update({
+          'applications': applicants,
+        });
+
+      } else {
+        throw Exception('Applicant not found');
+      }
+    } else {
+      throw Exception('Job not found');
+    }
+  } catch (e) {
+    rethrow; // Re-throws the error after logging
+  }
+}
+
+
+
 
 
 

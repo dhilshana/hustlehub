@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hastlehub/routes/routeConstants.dart';
 import 'package:hastlehub/services/firestoreDataBase.dart';
 import 'package:hastlehub/utils/constants.dart';
 
@@ -38,7 +39,7 @@ class _PostedJobWidgetState extends State<PostedJobWidget> {
     
 
     // Extract job details from the jobData map
-    final String jobTitle = widget.jobData['jobTitle'] ?? 'Unknown Title';
+    final String jobTitle = widget.jobData['jobId'] ?? 'Unknown Title';
     final String initialSalary = widget.jobData['initialSalary'] ?? '400'; 
     final String finalSalary = widget.jobData['finalSalary'] ?? '900'; 
     final String currency = widget.jobData['currency']??'USD';
@@ -46,6 +47,13 @@ class _PostedJobWidgetState extends State<PostedJobWidget> {
     final int applicationCount = widget.jobData['applicationCount'] ?? 0;
     final String companyName = widget.companyData.company ?? 'unknown';
     final String date = calculateTimeAgo(widget.jobData['date']);
+    final List<dynamic> applications = widget.jobData['applications'];
+    final Map<String,dynamic> applicationData = {
+      'docId':widget.jobData['docId'],
+      'jobId':widget.jobData['jobId'],
+      'applications':widget.jobData['applications']
+    };
+
 
     return Container(
       padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 15.0),
@@ -145,12 +153,18 @@ class _PostedJobWidgetState extends State<PostedJobWidget> {
                   color: ktextColor,
                 ),
               ),
-              Text(
-                "$applicationCount Applications", // Display application count
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 13,
-                  color: kshowAllColor,
+              GestureDetector(
+                onTap: () {
+
+                  Navigator.pushNamed(context, AppRoute.applicationScreen,arguments: applicationData);
+                },
+                child: Text(
+                  "$applicationCount Applications", // Display application count
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                    color: kshowAllColor,
+                  ),
                 ),
               ),
             ],

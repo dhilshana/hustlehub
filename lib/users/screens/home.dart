@@ -12,6 +12,7 @@ import 'package:hastlehub/utils/constants.dart';
 import 'package:hastlehub/utils/controller.dart';
 import 'package:hastlehub/users/widgets/recommendationWidget.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserHomeScreen extends StatefulWidget {
   const UserHomeScreen({
@@ -27,6 +28,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   bool showAll = false;
   bool recommandations = true;
   String? userRole;
+  String? userName;
+  String? userEmail;
+  String? userPhone;
   Future<void> _getUserData() async {
     String? userId = AuthServices().getUser();
     if (userId == null) {
@@ -41,11 +45,20 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
       setState(() {
         userRole = userDoc['role'];
+        userName = userDoc['name'];
+        userEmail = userDoc['email'];
+        userPhone = userDoc['phone'];
       });
     } catch (e) {
       print("Error retrieving user data: $e");
     }
   }
+
+
+
+ 
+
+ 
 
   @override
   void initState() {
@@ -55,6 +68,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+   
     return SafeArea(
       child: Scaffold(
         backgroundColor: kBgColor,
@@ -74,7 +88,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               if (value == 1) {
                 Navigator.pushNamed(context, AppRoute.savedJobsScreen);
               } else if (value == 2) {
-                print("Logout selected");
+                FirebaseAuth.instance.signOut();
               }
             },
             icon: const Icon(
@@ -195,11 +209,22 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         child: ListView.builder(
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
+                           
+
+                            Map<String,dynamic> data = {
+                                    'userName':userName,
+                                    'userEmail':userEmail,
+                                    'userPhone':userPhone,
+                                    'docId':snapshot.data![index]['docId'],
+                                    'companyName':snapshot.data![index]['companyName'],
+                                    'jobTitle':snapshot.data![index]['jobTitle'],
+                                    'jobDetails':snapshot.data![index]['jobDetails'],
+                                  };
                             return GestureDetector(
                                 onTap: () {
                                   Navigator.pushNamed(
                                           context, AppRoute.jobDetailScreen,
-                                          arguments: snapshot.data![index])
+                                          arguments: data)
                                       .then((value) {
                                     setState(() {});
                                   });
@@ -238,12 +263,21 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               child: ListView.builder(
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context, index) {
+                                  Map<String,dynamic> data = {
+                                    'userName':userName,
+                                    'userEmail':userEmail,
+                                    'userPhone':userPhone,
+                                    'docId':snapshot.data![index]['docId'],
+                                    'companyName':snapshot.data![index]['companyName'],
+                                    'jobTitle':snapshot.data![index]['jobTitle'],
+                                    'jobDetails':snapshot.data![index]['jobDetails'],
+                                  };
                                   return GestureDetector(
                                       onTap: () {
                                         Navigator.pushNamed(context,
                                                 AppRoute.jobDetailScreen,
                                                 arguments:
-                                                    snapshot.data![index])
+                                                    data)
                                             .then((value) {
                                           setState(() {});
                                         });

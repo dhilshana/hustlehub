@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +7,7 @@ import 'package:hastlehub/routes/routes.dart';
 import 'package:hastlehub/services/appliedJobsDatabase.dart';
 import 'package:hastlehub/services/authCheck.dart';
 import 'package:hastlehub/services/local_database.dart';
+import 'package:hastlehub/services/userDataBase.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,8 +17,10 @@ void main() async{
 );
 LocalDatabse ldb = LocalDatabse();
 AppliedJobsDatabase ajdb = AppliedJobsDatabase();
+UserDataBase udb = UserDataBase();
 await ldb.initializeDb();
 await ajdb.initializeDb();
+await udb.initializeDb();
   runApp(const MainApp());
 }
 

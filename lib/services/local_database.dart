@@ -57,7 +57,6 @@ class LocalDatabse {
 
   Future retrieveValue() async{
     var valueMap = await database?.query('saved_jobs');
-    print('-----$valueMap--------');
     return valueMap;
   }
 

@@ -67,7 +67,6 @@ class AppliedJobsDatabase {
 
   Future retrieveValue() async{
     var valueMap = await database?.query('applied_jobs');
-    print('-----$valueMap--------');
      if (valueMap != null) {
     valueMap = valueMap.map((row) {
       return {
@@ -79,6 +78,26 @@ class AppliedJobsDatabase {
     }).toList();
   }
     return valueMap;
+  }
+
+  Future<void> deleteValue({
+     required String companyId,
+      required String jobTime,
+      required String opportunity_type,
+      required int openings,
+      required String skill,
+      required String title,
+      required String companyName,
+      required String location,
+      required String salary,
+      required String jobType,
+      required String dateOfPost,
+      required int experience,
+      required int applicationCount,
+  })async{
+    await database?.delete('applied_jobs',where: 'company_id =? AND job_title =? AND company_name =? AND job_location =? AND salary =? AND job_type =? AND opportunity_type =? AND date =? AND experience =? AND application_count =? AND job_time =?  AND openings =? AND skill =? ',
+    whereArgs: [companyId,title,companyName,location,salary,jobType,opportunity_type,dateOfPost,experience,applicationCount,jobTime,openings,skill]
+    );
   }
 
 

@@ -17,6 +17,7 @@ class CompanyHomeScreen extends StatefulWidget {
 class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
 
 FirestoreServices firestoreServices = FirestoreServices();
+TextEditingController countController = TextEditingController();
  
 
   void refreshJobs() {
@@ -24,6 +25,8 @@ FirestoreServices firestoreServices = FirestoreServices();
       setState(() {}); // Trigger a rebuild
     }
   }
+   
+   String docId = FirebaseAuth.instance.currentUser!.uid;
 
 
 
@@ -32,6 +35,7 @@ FirestoreServices firestoreServices = FirestoreServices();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          
           title: const Text(
               "Hustlehub",
               style: TextStyle(
@@ -42,11 +46,54 @@ FirestoreServices firestoreServices = FirestoreServices();
             centerTitle: true,
           backgroundColor: kBgColor,
           actions: [
-            IconButton(
-              onPressed: (){FirebaseAuth.instance.signOut();
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SplashScreen(),), (route) => false,);
-              }, 
-              icon:const Icon(Icons.logout_outlined))
+            PopupMenuButton<int>(
+            onSelected: (value) {
+              if (value == 1) {
+                showDialog(context: context, builder: (context) {
+                  return AlertDialog(content: TextField(
+                    controller: countController,
+                    decoration: InputDecoration(
+                      hintText: 'No. of Employees'
+                    ),
+                  ),
+                  actions: [
+                    TextButton(onPressed: (){
+                      firestoreServices.updateEmployeeCount(data: int.parse(countController.text));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Updated Successfully')));
+                      Navigator.pop(context);
+                    }, child: Text('OK',style: TextStyle(
+                      color: kfontColor
+                    ),)),
+                    TextButton(onPressed: (){
+                      Navigator.pop(context);
+                    }, child: Text('Cancel',style: TextStyle(
+                      color: kfontColor
+                    ),))
+                  ],
+                    
+                  );
+                },);
+              } else if (value == 2) {
+                FirebaseAuth.instance.signOut();
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SplashScreen(),), (route) => false,);
+              }
+            },
+            icon: const Icon(
+              Icons.list,
+              size: 30,
+            ),
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: 1,
+                child: Text('Set Number of Employees'),
+              ),
+              PopupMenuItem(
+                value: 2,
+                child: Text('Logout'),
+              ),
+            ],
+          ),
+           
           ],
         ),
         backgroundColor: kBgColor,
@@ -69,14 +116,38 @@ FirestoreServices firestoreServices = FirestoreServices();
                return ListView.builder(
                 itemCount: company.jobs?.length ?? 0,
                 itemBuilder: (context, index) {
+
                   final jobData = company.jobs![index];
                   final companyData = company;
+
+                  Map<String,dynamic> jobDetails = {
+                    'docId':docId,
+                    'jobId':jobData['jobTitle'],
+                    'date':jobData['date'],
+                    'applicationCount':jobData['applicationCount'],
+                    'oppurtunityType':jobData['oppurtunityType'],
+                    'jobTime':jobData['jobTime'],
+                    'finalSalary':jobData['finalSalary'],
+                    'preference':jobData['preference'],
+                    'experience':jobData['experience'],
+                    'skills':jobData['skills'],
+                    'openingsCount':jobData['openingsCount'],
+                    'jobLocation':jobData['jobLocation'],
+                    'initialSalary':jobData['initialSalary'],
+                    'currency':jobData['currency'],
+                    'jobType':jobData['jobType'],
+                    'perks':jobData['perks'],
+                    'desc':jobData['desc'],
+                    'applications':jobData['applications'],
+                  };
+
+
                   //fecth company name and job title
                   return GestureDetector(
                     onTap: (){
                       Navigator.pushNamed(context, AppRoute.postedJobDetailScreen,arguments: jobData);
                     },
-                    child: PostedJobWidget(jobData: jobData,companyData: companyData,onJobDeleted: refreshJobs,)); // Pass job data to your widget
+                    child: PostedJobWidget(jobData: jobDetails,companyData: companyData,onJobDeleted: refreshJobs,)); // Pass job data to your widget
                 },
                );
                }
